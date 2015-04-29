@@ -17,6 +17,7 @@ public class FlightScheduler {
                 new ArrayList<Flight>(),
                 new ArrayList<ArrayList<Flight>>()
         );
+        System.out.println("Super sperm");
     }
 
     public static void searchForFlights() {
