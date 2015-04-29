@@ -26,7 +26,7 @@ Firstly, [Atlassian Git](https://www.atlassian.com/git/) provides some good deta
 ### Commit and Push
 1. You will only ever want to commit to a branch , not master
 2. While on the branch with your changes use `git commit -am "Descriptive commit message of my changes."`
-3. Then you can use `git push` to push to the remote repository which we set in step 4 of "Setting-up".
+3. Then you can use `git push` to push to the remote repository which we set in step 4 of "Setting-up". You will need to enter your bitbucket password here.
 
 ### Changing branch
 1. To change to another branch simply use `git checkout <branchname>`
