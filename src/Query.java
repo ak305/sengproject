@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class Query {
     private ArrayList<Preference> preferenceOrder;      // Order of preference - sorting
@@ -9,7 +11,7 @@ public class Query {
     public Query(ArrayList<Preference> preferenceOrder, Flight request, int numPlansToShow) {
         this.preferenceOrder = preferenceOrder;
         this.request = request;
-        this.flightPlans = new ArrayList<>();
+        this.flightPlans = new ArrayList<ArrayList<Flight>>();
         this.numPlansToShow = numPlansToShow;
     }
 
@@ -17,7 +19,7 @@ public class Query {
      * Gets the airline that the request would prefer to use.
      * @return preferred Airline
      */
-    public String getPrefferedAirline() {
+    public String getPreferredAirline() {
         return request.getAirline();
     }
 
@@ -33,6 +35,8 @@ public class Query {
      */
     private void sortFlights() {
         // need to take in parameters for sorting? Should we make an enum class for the 3 options
+
+
     }
 
     /////////////////////
