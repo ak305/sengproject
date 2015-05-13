@@ -6,7 +6,7 @@ public class City {
 
     public City(String name) {
         this.name = name;
-        outgoingFlights = new ArrayList<>();
+        outgoingFlights = new ArrayList<Flight>();
     }
 
     /**

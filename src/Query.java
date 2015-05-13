@@ -11,7 +11,7 @@ public class Query {
     public Query(ArrayList<Preference> preferenceOrder, Flight request, int numPlansToShow) {
         this.preferenceOrder = preferenceOrder;
         this.request = request;
-        this.flightPlans = new ArrayList<>();
+        this.flightPlans = new ArrayList<FlightPlan>();
         this.numPlansToShow = numPlansToShow;
     }
 
@@ -38,7 +38,7 @@ public class Query {
 
         //When searching for flightPaths calculate the totalCost, totalTime, freqFlierHours 
         //before adding into list of FlightPlans
-        PriorityQueue<FlightPlan> pQueue = new PriorityQueue<>(
+        PriorityQueue<FlightPlan> pQueue = new PriorityQueue<FlightPlan>(
                 10,
                 new FlightPlanChainedComparator(
                         preferenceOrder.get(0),
@@ -46,7 +46,7 @@ public class Query {
                         preferenceOrder.get(2)
                 )
         );
-        ArrayList<FlightPlan> endPlans = new ArrayList<>();
+        ArrayList<FlightPlan> endPlans = new ArrayList<FlightPlan>();
 
         pQueue.add(new FlightPlan(request.getFrom(), null, 0, 0, 0));
 
@@ -65,11 +65,10 @@ public class Query {
                 //Flight plan ends in the requested destination
                 if (flight.getTo().equals(request.getTo())) {
                     endPlans.add(newPlan);
-
-                    //endPlans will contain the first N flight plans. Some optimal flight plans may be excluded??
-                    if (endPlans.size() == numPlansToShow) break;
                 }
             }
+            //endPlans will contain the first N flight plans. Some optimal flight plans may be excluded??
+            if (endPlans.size() == numPlansToShow) break;
 
         }
 
@@ -103,9 +102,9 @@ public class Query {
     private FlightPlan createNeighbour(Flight flight, FlightPlan currentPlan){
         ArrayList<Flight> newPath;
         if (currentPlan.getFlightPath() == null) {
-            newPath = new ArrayList<>();
+            newPath = new ArrayList<Flight>();
         } else {
-            newPath = new ArrayList<>(currentPlan.getFlightPath());
+            newPath = new ArrayList<Flight>(currentPlan.getFlightPath());
         }
 
         newPath.add(flight);

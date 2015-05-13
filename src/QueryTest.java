@@ -131,5 +131,6 @@ public class QueryTest {
         );
 
         query.searchForFlightPlans();
+        
     }
 }
