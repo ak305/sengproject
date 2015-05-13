@@ -23,6 +23,7 @@ public class Query {
         return request.getAirline();
     }
 
+    public ArrayList<FlightPlan> getFlightPlans() { return flightPlans; }
     /**
      * Searches for flight paths, adding each to the flightPlans list
      */
@@ -71,7 +72,7 @@ public class Query {
             if (endPlans.size() == numPlansToShow) break;
 
         }
-
+        flightPlans.addAll(endPlans);
     }
 
     /**
