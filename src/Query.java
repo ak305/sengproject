@@ -67,12 +67,11 @@ public class Query {
 
                 FlightPlan newPlan = createNeighbour(flight, currentPlan);
                 pQueue.add(newPlan);
+            }
 
-                //Flight plan ends in the requested destination
-                if (flight.getTo().equals(request.getTo())) {
-                    endPlans.add(newPlan);
-                }
-                if (endPlans.size() == numPlansToShow) break;
+            //Flight plan ends in the requested destination
+            if (currentPlan.getCurrentCity().equals(request.getTo())) {
+                endPlans.add(currentPlan);
             }
             //endPlans will contain the first N flight plans. Some optimal flight plans may be excluded??
             if (endPlans.size() == numPlansToShow) break;
