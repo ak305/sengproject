@@ -51,7 +51,10 @@ public class FlightPlan {
     public City getCurrentCity() {
         return currentCity;
     }
-    
+
+    public Flight getLastFlight() {
+        return flightPath.get(flightPath.size() - 1);
+    }
     
 
 

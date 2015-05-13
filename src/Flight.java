@@ -36,6 +36,8 @@ public class Flight {   //TODO: Need to make the class comparator or comparable
         return departTime;
     }
 
+    public Calendar getArrivalTime() { return arrivalTime; }
+
     /**
      * Returns the airline name of this flight.
      * @return airline

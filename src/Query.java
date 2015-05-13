@@ -60,6 +60,10 @@ public class Query {
                 if (preferenceOrder.get(0).equals(Preference.NAME) &&
                         !flight.getAirline().equals(request.getAirline())) continue;
 
+
+                if (currentPlan.getFlightPath() != null &&
+                    flight.getDepartTime().getTimeInMillis() <
+                    currentPlan.getLastFlight().getArrivalTime().getTimeInMillis() + 3600000) continue;
                 FlightPlan newPlan = createNeighbour(flight, currentPlan);
                 pQueue.add(newPlan);
 

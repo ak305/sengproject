@@ -132,6 +132,7 @@ public class QueryTest {
 
         query.searchForFlightPlans();
         for (FlightPlan fp: query.getFlightPlans()) {
+            //System.out
             for (Flight f: fp.getFlightPath()) {
                 System.out.println(f.getFrom().getName() + " to " + f.getTo().getName() + " " + f.getAirline());
             }
