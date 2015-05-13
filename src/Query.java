@@ -64,6 +64,7 @@ public class Query {
                 if (currentPlan.getFlightPath() != null &&
                     flight.getDepartTime().getTimeInMillis() <
                     currentPlan.getLastFlight().getArrivalTime().getTimeInMillis() + 3600000) continue;
+
                 FlightPlan newPlan = createNeighbour(flight, currentPlan);
                 pQueue.add(newPlan);
 
@@ -71,6 +72,7 @@ public class Query {
                 if (flight.getTo().equals(request.getTo())) {
                     endPlans.add(newPlan);
                 }
+                if (endPlans.size() == numPlansToShow) break;
             }
             //endPlans will contain the first N flight plans. Some optimal flight plans may be excluded??
             if (endPlans.size() == numPlansToShow) break;
