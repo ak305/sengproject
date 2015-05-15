@@ -1,11 +1,20 @@
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
+import javax.swing.border.TitledBorder;
+import javax.swing.event.MouseInputAdapter;
 
 
-public class Sidebar extends JPanel {
+public class Sidebar extends JPanel implements ActionListener {
 	//City start
 	private JComboBox startCity;
 	private JLabel startCityLabel;
@@ -23,8 +32,10 @@ public class Sidebar extends JPanel {
 	private JLabel timeLabel;
 	
 	//Search priority
-	
+	private JList<String> priority;
+	private DefaultListModel<String> priorityModel;
 	private JLabel priorityLabel;
+
 	
 	//Airline
 	private JComboBox airline;
@@ -38,6 +49,9 @@ public class Sidebar extends JPanel {
 	private JButton search;
 	//clear
 	private JButton clear;
+	
+	private boolean mouseDragging = false;
+    private int dragSourceIndex;
 	
 		
 	public Sidebar(String[] cities){
@@ -60,25 +74,54 @@ public class Sidebar extends JPanel {
 		numOutput = new JTextField();
 		numOutputLabel = new JLabel();
 		search = new JButton("Search");
+		
+		// do we need clear?
 		clear = new JButton("Clear");
 		
+		search.addActionListener(this);
+		clear.addActionListener(this);
 		
-//		add(startCity);
-//		add(endCity);
-//		for(JComboBox box : date){
-//			add(box);
-//		}
-//		for(JComboBox box : time){
-//			add(box);
-//		}
-//		add(airline);
-//		add(numOutput);
-//		add(search);
-//		add(clear);
+		priorityLabel = new JLabel();
+
+		priorityModel = new DefaultListModel<String>();
+		priorityModel.ensureCapacity(3);
+		priorityModel.addElement("Time");
+		priorityModel.addElement("Cost");
+		priorityModel.addElement("Airline");
 		
+		priority = new JList<String>(priorityModel);
+		// http://stackoverflow.com/questions/3804361/how-to-enable-drag-and-drop-inside-jlist
+		priority.addMouseListener(new MouseAdapter() {
+	        @Override
+	        public void mousePressed(MouseEvent e) {
+	            if (SwingUtilities.isLeftMouseButton(e)) {
+	                dragSourceIndex = priority.getSelectedIndex();
+	                mouseDragging = true;
+	            }
+	        }
+	        
+	        @Override
+	        public void mouseReleased(MouseEvent e) {
+	            mouseDragging = false;
+	        }
+		});
+		priority.addMouseMotionListener(new MouseAdapter() {
+	        @Override
+	        public void mouseDragged(MouseEvent e) {
+	            if (mouseDragging) {
+	                int currentIndex = priority.locationToIndex(e.getPoint());
+	                if (currentIndex != dragSourceIndex) {
+	                    int dragTargetIndex = priority.getSelectedIndex();
+	                    String dragElement = priorityModel.get(dragSourceIndex);
+	                    priorityModel.remove(dragSourceIndex);
+	                    priorityModel.add(dragTargetIndex, dragElement);
+	                    dragSourceIndex = currentIndex;
+	                }
+	            }
+	        }
+		});
 		display();
-		// align elements
-//		setLocation();
+
 	}
 	
 	private void display(){
@@ -89,17 +132,59 @@ public class Sidebar extends JPanel {
 		timeLabel.setText("Flight Time: ");
 		airlineLabel.setText("Airline: ");
 		numOutputLabel.setText("No. Routes ");
+		priorityLabel.setText("Sort Priority Order: ");
 		
 		JPanel container = new JPanel();
-		container.setPreferredSize(new Dimension(320, 400));
-		container.setBackground(Color.LIGHT_GRAY);
+		container.setPreferredSize(new Dimension(320, 180));
+		container.setBackground(Color.lightGray);
 		container.setLayout(new GridBagLayout());
+		
+		JPanel container2 = new JPanel();
+		container2.setPreferredSize(new Dimension(320, 100));
+		container2.setBackground(Color.lightGray);
+		container2.setLayout(new GridBagLayout());
+		
+		JPanel container3 = new JPanel();
+		container3.setPreferredSize(new Dimension(320, 130));
+		container3.setBackground(Color.lightGray);
+		container3.setLayout(new GridBagLayout());
+		
 		add(container, BorderLayout.NORTH);
+		add(container2, BorderLayout.CENTER);
+		add(container3, BorderLayout.SOUTH);
+		
 		GridBagConstraints c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.NORTH;
-		c.insets = new Insets(15,0,0,0);
+		c.insets = new Insets(10,0,0,0);
 //		c.weighty = 1.0;
 		
+		// container 2
+		// priority
+		JScrollPane pane = new JScrollPane();
+		pane.setPreferredSize(new Dimension(100, 70));
+		pane.getViewport().add(priority);
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 0.5;
+		c.gridx = 1;
+		c.gridy = 0;
+		container2.add(pane, c);
+
+		// priority gridy 4, 5, 6,
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 0.5;
+		c.gridx = 0;
+		c.gridy = 0;
+		container2.add(priorityLabel, c);
+		
+		JLabel order = new JLabel();
+		order.setText("<html>1 <p>2 <p>3 <p><p></html>");
+		c.fill = GridBagConstraints.VERTICAL;
+		c.weightx = 0.1;
+		c.gridx = 2;
+		c.gridy = 0;
+		container2.add(order, c);
+
+		//container 1
 		// flight date - Gridy 2
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 0.5;
@@ -143,22 +228,7 @@ public class Sidebar extends JPanel {
 		c.gridx = 2;
 		c.gridy = 3;
 		container.add(time.get(1), c);
-		
-		// clear grid 7
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.weightx = 0.5;
-		c.gridx = 0;
-		c.gridy = 7;
-		container.add(clear, c);
-		
-		// search grid 7
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.weightx = 0.5;
-		c.gridx = 2;
-		c.gridy = 7;
-		c.gridwidth = 2;
-		container.add(search, c);
-		
+
 		// startCity gridy 0
         c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 0.5;
@@ -188,40 +258,49 @@ public class Sidebar extends JPanel {
 		c.gridwidth = 3;
 		container.add(endCity, c);
 		
-		//airline grid 4
+		
+		// container3
+		c.gridwidth = 1;
+		//airline grid 0
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 0.5;
 		c.gridx = 0;
-		c.gridy = 4;
-		container.add(airlineLabel, c);
+		c.gridy = 0;
+		container3.add(airlineLabel, c);
 		
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 0.5;
 		c.gridx = 1;
-		c.gridy = 4;
-		c.gridwidth = 3;
-		container.add(airline, c);
+		c.gridy = 0;
+		container3.add(airline, c);
 		
-		// priority gridy 5
-		
-		// numOutput gridy 6
+		// numOutput gridy 1
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 0.5;
 		c.gridx = 0;
-		c.gridy = 6;
-		container.add(numOutputLabel, c);
+		c.gridy = 1;
+		container3.add(numOutputLabel, c);
 		
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 0.5;
 		c.gridx = 1;
-		c.gridy = 6;
-		c.gridwidth = 3;
-		container.add(numOutput, c);
+		c.gridy = 1;
+		container3.add(numOutput, c);
 		
+		// clear grid 2
+//		c.fill = GridBagConstraints.HORIZONTAL;
+//		c.weightx = 0.5;
+//		c.gridx = 0;
+//		c.gridy = 2;
+//		container3.add(clear, c);
 		
-		
-		
-		
+		// search grid 9
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.insets = new Insets(30,0,0,0);
+		c.weightx = 0.5;
+		c.gridx = 1;
+		c.gridy = 2;
+		container3.add(search, c);
 	}
 	
 	
@@ -233,4 +312,24 @@ public class Sidebar extends JPanel {
         super.paintComponent(g);
 //    	g.drawImage(backgroundImage, 0, 0, null);
     }
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if(e.getSource().equals(search)){
+			int index = startCity.getSelectedIndex();
+			int num = 0;
+			System.out.print("Click search; " + index + " " + "; order: ");
+			for(int i = 0; i < 3; i ++){
+				System.out.print(priorityModel.get(i) + " ");
+			}
+			try{
+				num = Integer.parseInt(numOutput.getText());
+			} catch(NumberFormatException e2){
+				num = 0;
+				// display error message?
+			}
+			System.out.print("; numOutput: " + num);
+			System.out.println();
+		}
+	}
 }
