@@ -5,6 +5,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -25,11 +27,21 @@ public class Sidebar extends JPanel implements ActionListener {
 	
 	//flight Date
 	private ArrayList<JComboBox> date;
+	private Integer[] year;
+	private Integer[] month;
+	private Integer[] day;
 	private JLabel dateLabel;
+	private JLabel yearLabel;
+	private JLabel monthLabel;
+	private JLabel dayLabel;
 	
 	//Departure Time
 	private ArrayList<JComboBox> time;
+	private Integer[] hour;
+	private Integer[] minute;
 	private JLabel timeLabel;
+	private JLabel hourLabel;
+	private JLabel minuteLabel;
 	
 	//Search priority
 	private JList<String> priority;
@@ -38,7 +50,7 @@ public class Sidebar extends JPanel implements ActionListener {
 
 	
 	//Airline
-	private JComboBox airline;
+	private JComboBox airlines;
 	private JLabel airlineLabel;
 	
 	//Num output
@@ -50,26 +62,60 @@ public class Sidebar extends JPanel implements ActionListener {
 	//clear
 	private JButton clear;
 	
+	private String[] cities;
+	private String[] airlineList;
+	
 	private boolean mouseDragging = false;
     private int dragSourceIndex;
 	
 		
 	public Sidebar(String[] cities){
+		this.cities = cities;
 		startCity = new JComboBox(cities);
 		startCityLabel = new JLabel();
 		endCity = new JComboBox(cities);
 		endCityLabel = new JLabel();
 		date = new ArrayList<JComboBox>();
 		dateLabel = new JLabel();
-		for(int i = 0; i < 3; i++){
-			date.add(new JComboBox());
+
+		year = new Integer[501];
+		month = new Integer[12];
+		day = new Integer[31];
+		year[0] = 2000;
+		for(int i = 1; i <= 500; i++){
+			if(i <= 31){
+				if(i <= 12){
+					month[i-1] = i;
+				}
+				day[i-1] = i;
+			}
+			year[i] = 2000 + i;
 		}
+		yearLabel = new JLabel();
+		monthLabel = new JLabel();
+		dayLabel = new JLabel();
+		
+		date.add(new JComboBox(day));
+		date.add(new JComboBox(month));
+		date.add(new JComboBox(year));
+		
 		time = new ArrayList<JComboBox>();
 		timeLabel = new JLabel();
-		for(int i = 0; i < 2; i++){
-			time.add(new JComboBox());
+		hour = new Integer[24];
+		minute = new Integer[60];
+		for(int i = 0; i < 60; i++){
+			if(i < 24){
+				hour[i] = i;
+			}
+			minute[i] = i;
 		}
-		airline = new JComboBox();
+		hourLabel = new JLabel();
+		minuteLabel = new JLabel();
+		time.add(new JComboBox(hour));
+		time.add(new JComboBox(minute));
+		
+		String[] listAirline = {"None", "Virgin", "Qantas"};
+		airlines = new JComboBox(listAirline);
 		airlineLabel = new JLabel();
 		numOutput = new JTextField();
 		numOutputLabel = new JLabel();
@@ -129,13 +175,18 @@ public class Sidebar extends JPanel implements ActionListener {
 		startCityLabel.setText("City Start: ");
 		endCityLabel.setText("City End: ");
 		dateLabel.setText("Flight Date: ");
+		yearLabel.setText("Year:");
+		monthLabel.setText("Month:");
+		dayLabel.setText("Day:");
 		timeLabel.setText("Flight Time: ");
+		hourLabel.setText("Hour:");
+		minuteLabel.setText("Min:");
 		airlineLabel.setText("Airline: ");
 		numOutputLabel.setText("No. Routes ");
 		priorityLabel.setText("Sort Priority Order: ");
 		
 		JPanel container = new JPanel();
-		container.setPreferredSize(new Dimension(320, 180));
+		container.setPreferredSize(new Dimension(320, 220));
 		container.setBackground(Color.lightGray);
 		container.setLayout(new GridBagLayout());
 		
@@ -169,7 +220,7 @@ public class Sidebar extends JPanel implements ActionListener {
 		c.gridy = 0;
 		container2.add(pane, c);
 
-		// priority gridy 4, 5, 6,
+		// priority gridy
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 0.5;
 		c.gridx = 0;
@@ -186,47 +237,82 @@ public class Sidebar extends JPanel implements ActionListener {
 
 		//container 1
 		// flight date - Gridy 2
+		
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 0.5;
 		c.gridx = 0;
-		c.gridy = 2;
+		c.gridy = 3;
 		container.add(dateLabel, c);
 		
+		c.insets = new Insets(10,15,0,0);
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 0.5;
 		c.gridx = 1;
 		c.gridy = 2;
-		container.add(date.get(0), c);
+		container.add(dayLabel, c);
 		
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 0.5;
 		c.gridx = 2;
 		c.gridy = 2;
-		container.add(date.get(1), c);
+		container.add(monthLabel, c);
 		
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 0.5;
 		c.gridx = 3;
 		c.gridy = 2;
+		container.add(yearLabel, c);
+		
+		c.insets = new Insets(10,0,0,0);
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 0.5;
+		c.gridx = 1;
+		c.gridy = 3;
+		container.add(date.get(0), c);
+		
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 0.5;
+		c.gridx = 2;
+		c.gridy = 3;
+		container.add(date.get(1), c);
+		
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 0.5;
+		c.gridx = 3;
+		c.gridy = 3;
 		container.add(date.get(2), c);
 		
 		//time gridy 3
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 0.5;
 		c.gridx = 0;
-		c.gridy = 3;
+		c.gridy = 5;
 		container.add(timeLabel, c);
 		
+		c.insets = new Insets(10,15,0,0);
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 0.5;
 		c.gridx = 1;
-		c.gridy = 3;
+		c.gridy = 4;
+		container.add(hourLabel, c);
+		
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 0.5;
+		c.gridx = 2;
+		c.gridy = 4;
+		container.add(minuteLabel, c);
+		
+		c.insets = new Insets(10,0,0,0);
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 0.5;
+		c.gridx = 1;
+		c.gridy = 5;
 		container.add(time.get(0), c);
 		
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 0.5;
 		c.gridx = 2;
-		c.gridy = 3;
+		c.gridy = 5;
 		container.add(time.get(1), c);
 
 		// startCity gridy 0
@@ -272,7 +358,7 @@ public class Sidebar extends JPanel implements ActionListener {
 		c.weightx = 0.5;
 		c.gridx = 1;
 		c.gridy = 0;
-		container3.add(airline, c);
+		container3.add(airlines, c);
 		
 		// numOutput gridy 1
 		c.fill = GridBagConstraints.HORIZONTAL;
@@ -312,23 +398,73 @@ public class Sidebar extends JPanel implements ActionListener {
         super.paintComponent(g);
 //    	g.drawImage(backgroundImage, 0, 0, null);
     }
+	
+//	public Flight makeFlightRequest(){
+//		Flight request = new Flight(City from, City to, Calendar departTime, Calendar arrivalTime,
+//				String airline, int cost);
+//	}
+//	
+//	public Query makeQuery(){
+//		Query query = new Query(Arraylist<Preference> preferenceOrder, Flight request, int numPlansToShow);
+//	}
+//	
+//	public City makeCity(){
+//		City city = new City(String name);
+//	}
+//	
+//	public Calendar makeCalendar(){
+//		Calendar departTime = new GregorianCalendar(int year, int month, int dayOfMonth, int hourOfDay, int min);
+//	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource().equals(search)){
-			int index = startCity.getSelectedIndex();
-			int num = 0;
-			System.out.print("Click search; " + index + " " + "; order: ");
+			
+//			City cityFrom = new City((String) startCity.getItemAt(startCity.getSelectedIndex()));
+//			City cityTo = new City((String) endCity.getItemAt(endCity.getSelectedIndex()));
+			int departYear = (int) date.get(2).getItemAt(date.get(2).getSelectedIndex());
+			int departMonth = (int) date.get(1).getItemAt(date.get(1).getSelectedIndex()) - 1;
+			int departDay = (int) date.get(0).getItemAt(date.get(0).getSelectedIndex());
+
+			int departHour = (int) time.get(0).getItemAt(time.get(0).getSelectedIndex());
+			int departMinute = (int) time.get(1).getItemAt(time.get(1).getSelectedIndex());
+			
+			Calendar departTime = new GregorianCalendar(departYear, departMonth, departDay,
+					departHour, departMinute);
+			String airline = (String) airlines.getItemAt(airlines.getSelectedIndex());
+			
+			System.out.println(departDay + " " + departMonth + " " + departYear + "; " + departHour 
+					+ " " + departMinute  + "; " + airline);
+			
+//			Flight request = new Flight(cityFrom, cityTo, departTime, null, airline, 0);
+			
+//			ArrayList<Preference> preferenceOrder = new ArrayList<Preference>();
+//			for(int i = 0; i < 3; i ++){
+//				if(priorityModel.get(i).equals("Cost")){
+//					preferenceOrder.add(Preference.COST);
+//				}else if(priorityModel.get(i).equals("Time")){
+//					preferenceOrder.add(Preference.TIME);
+//				}else if(priorityModel.get(i).equals("Airline")){
+//					preferenceOrder.add(Preference.NAME);
+//				}
+//			}
+			
+			int numPlansToShow;
+			try{
+				numPlansToShow = Integer.parseInt(numOutput.getText());
+			} catch(NumberFormatException e2){
+				numPlansToShow = 0;
+				// display error message?
+				// or default 10?
+			}
+			
+//			Query query = new Query(preferenceOrder, request, numPlansToShow);
+			
+
 			for(int i = 0; i < 3; i ++){
 				System.out.print(priorityModel.get(i) + " ");
 			}
-			try{
-				num = Integer.parseInt(numOutput.getText());
-			} catch(NumberFormatException e2){
-				num = 0;
-				// display error message?
-			}
-			System.out.print("; numOutput: " + num);
+			System.out.print("; numOutput: " + numPlansToShow);
 			System.out.println();
 		}
 	}
