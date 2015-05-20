@@ -1,10 +1,14 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -14,6 +18,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.MouseInputAdapter;
+import javax.swing.text.NumberFormatter;
 
 
 public class Sidebar extends JPanel implements ActionListener {
@@ -28,7 +33,7 @@ public class Sidebar extends JPanel implements ActionListener {
 	//flight Date
 	private ArrayList<JComboBox> date;
 	private Integer[] year;
-	private Integer[] month;
+	private String[] month = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
 	private Integer[] day;
 	private JLabel dateLabel;
 	private JLabel yearLabel;
@@ -54,8 +59,9 @@ public class Sidebar extends JPanel implements ActionListener {
 	private JLabel airlineLabel;
 	
 	//Num output
-	private JTextField numOutput;
+	private JFormattedTextField numOutput;
 	private JLabel numOutputLabel;
+	private NumberFormat numberFormat;
 	
 	//Start
 	private JButton search;
@@ -79,14 +85,10 @@ public class Sidebar extends JPanel implements ActionListener {
 		dateLabel = new JLabel();
 
 		year = new Integer[501];
-		month = new Integer[12];
 		day = new Integer[31];
 		year[0] = 2000;
 		for(int i = 1; i <= 500; i++){
 			if(i <= 31){
-				if(i <= 12){
-					month[i-1] = i;
-				}
 				day[i-1] = i;
 			}
 			year[i] = 2000 + i;
@@ -117,7 +119,17 @@ public class Sidebar extends JPanel implements ActionListener {
 		String[] listAirline = {"None", "Virgin", "Qantas"};
 		airlines = new JComboBox(listAirline);
 		airlineLabel = new JLabel();
-		numOutput = new JTextField();
+		numberFormat.getIntegerInstance();
+		numOutput = new JFormattedTextField(numberFormat);
+		numOutput.setValue(10);
+		numOutput.setFocusLostBehavior(JFormattedTextField.PERSIST);
+		numOutput.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent e) {
+				numOutput.setText(numOutput.getText());
+				numOutput.selectAll();
+			}
+		});
 		numOutputLabel = new JLabel();
 		search = new JButton("Search");
 		
@@ -172,31 +184,32 @@ public class Sidebar extends JPanel implements ActionListener {
 	
 	private void display(){
 		setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-		startCityLabel.setText("City Start: ");
-		endCityLabel.setText("City End: ");
-		dateLabel.setText("Flight Date: ");
+		startCityLabel.setText("From: ");
+		endCityLabel.setText("To: ");
+		dateLabel.setText("Depart Date: ");
 		yearLabel.setText("Year:");
 		monthLabel.setText("Month:");
 		dayLabel.setText("Day:");
-		timeLabel.setText("Flight Time: ");
+		timeLabel.setText("Depart Time: ");
 		hourLabel.setText("Hour:");
 		minuteLabel.setText("Min:");
-		airlineLabel.setText("Airline: ");
-		numOutputLabel.setText("No. Routes ");
-		priorityLabel.setText("Sort Priority Order: ");
+		airlineLabel.setText("Airline Preference: ");
+		numOutputLabel.setText("No. Routes: ");
+		priorityLabel.setText("Flight Priority Order: ");
+		
 		
 		JPanel container = new JPanel();
-		container.setPreferredSize(new Dimension(320, 220));
+		container.setPreferredSize(new Dimension(330, 220));
 		container.setBackground(Color.lightGray);
 		container.setLayout(new GridBagLayout());
 		
 		JPanel container2 = new JPanel();
-		container2.setPreferredSize(new Dimension(320, 100));
+		container2.setPreferredSize(new Dimension(330, 100));
 		container2.setBackground(Color.lightGray);
 		container2.setLayout(new GridBagLayout());
 		
 		JPanel container3 = new JPanel();
-		container3.setPreferredSize(new Dimension(320, 130));
+		container3.setPreferredSize(new Dimension(330, 130));
 		container3.setBackground(Color.lightGray);
 		container3.setLayout(new GridBagLayout());
 		
@@ -228,7 +241,9 @@ public class Sidebar extends JPanel implements ActionListener {
 		container2.add(priorityLabel, c);
 		
 		JLabel order = new JLabel();
-		order.setText("<html>1 <p>2 <p>3 <p><p></html>");
+		order.setText("<html>1 <p>2 <p>3 <p><b><font color=#B82E00>(?)</font></b><p></html>");
+		order.setToolTipText("Click and drag options to rearrange priority order, "
+				+ "with 1 as highest priority");
 		c.fill = GridBagConstraints.VERTICAL;
 		c.weightx = 0.1;
 		c.gridx = 2;
@@ -287,31 +302,33 @@ public class Sidebar extends JPanel implements ActionListener {
 		c.weightx = 0.5;
 		c.gridx = 0;
 		c.gridy = 5;
+		c.gridwidth = 2;
 		container.add(timeLabel, c);
 		
-		c.insets = new Insets(10,15,0,0);
+		c.gridwidth = 1;
+		c.insets = new Insets(10,20,0,0);
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 0.5;
-		c.gridx = 1;
+		c.gridx = 2;
 		c.gridy = 4;
 		container.add(hourLabel, c);
 		
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 0.5;
-		c.gridx = 2;
+		c.gridx = 3;
 		c.gridy = 4;
 		container.add(minuteLabel, c);
 		
 		c.insets = new Insets(10,0,0,0);
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 0.5;
-		c.gridx = 1;
+		c.gridx = 2;
 		c.gridy = 5;
 		container.add(time.get(0), c);
 		
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 0.5;
-		c.gridx = 2;
+		c.gridx = 3;
 		c.gridy = 5;
 		container.add(time.get(1), c);
 
@@ -346,6 +363,7 @@ public class Sidebar extends JPanel implements ActionListener {
 		
 		
 		// container3
+		c.insets = new Insets(10,0,0,25);
 		c.gridwidth = 1;
 		//airline grid 0
 		c.fill = GridBagConstraints.HORIZONTAL;
@@ -382,7 +400,7 @@ public class Sidebar extends JPanel implements ActionListener {
 		
 		// search grid 9
 		c.fill = GridBagConstraints.HORIZONTAL;
-		c.insets = new Insets(30,0,0,0);
+		c.insets = new Insets(30,0,0,22);
 		c.weightx = 0.5;
 		c.gridx = 1;
 		c.gridy = 2;
@@ -418,12 +436,14 @@ public class Sidebar extends JPanel implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		// Check date
+		// If valid pass values in FlightScheduler object to create new query
 		if(e.getSource().equals(search)){
 			
 //			City cityFrom = new City((String) startCity.getItemAt(startCity.getSelectedIndex()));
 //			City cityTo = new City((String) endCity.getItemAt(endCity.getSelectedIndex()));
 			int departYear = (int) date.get(2).getItemAt(date.get(2).getSelectedIndex());
-			int departMonth = (int) date.get(1).getItemAt(date.get(1).getSelectedIndex()) - 1;
+			int departMonth = date.get(1).getSelectedIndex();
 			int departDay = (int) date.get(0).getItemAt(date.get(0).getSelectedIndex());
 
 			int departHour = (int) time.get(0).getItemAt(time.get(0).getSelectedIndex());
@@ -433,9 +453,22 @@ public class Sidebar extends JPanel implements ActionListener {
 					departHour, departMinute);
 			String airline = (String) airlines.getItemAt(airlines.getSelectedIndex());
 			
+			
+			// proper dates from calendar.
+			System.out.println(departTime.get(Calendar.DAY_OF_MONTH) + " " + departTime.get(Calendar.MONTH) + " " + departTime.get(Calendar.YEAR));
+			
 			System.out.println(departDay + " " + departMonth + " " + departYear + "; " + departHour 
 					+ " " + departMinute  + "; " + airline);
 			
+			if (departMonth != departTime.get(Calendar.MONTH)){
+				System.out.println("Invalid Date");
+				JOptionPane.showMessageDialog(this,
+					    "Invalid date input.",
+					    "Invalid Input",
+					    JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+
 //			Flight request = new Flight(cityFrom, cityTo, departTime, null, airline, 0);
 			
 //			ArrayList<Preference> preferenceOrder = new ArrayList<Preference>();
@@ -454,6 +487,10 @@ public class Sidebar extends JPanel implements ActionListener {
 				numPlansToShow = Integer.parseInt(numOutput.getText());
 			} catch(NumberFormatException e2){
 				numPlansToShow = 0;
+				JOptionPane.showMessageDialog(this,
+					    "Invalid number of routes input.",
+					    "Invalid Input",
+					    JOptionPane.ERROR_MESSAGE);
 				// display error message?
 				// or default 10?
 			}
