@@ -17,6 +17,11 @@ public class FlightScheduler {
                 new ArrayList<Flight>(),
                 new ArrayList<Query>()
         );
-        System.out.println("Super sperm");
-    }
+        
+  //test
+              
+    }   
+    
+
+
 }
