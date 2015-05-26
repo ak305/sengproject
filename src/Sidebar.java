@@ -418,23 +418,6 @@ public class Sidebar extends JPanel implements ActionListener {
         super.paintComponent(g);
 //    	g.drawImage(backgroundImage, 0, 0, null);
     }
-	
-//	public Flight makeFlightRequest(){
-//		Flight request = new Flight(City from, City to, Calendar departTime, Calendar arrivalTime,
-//				String airline, int cost);
-//	}
-//	
-//	public Query makeQuery(){
-//		Query query = new Query(Arraylist<Preference> preferenceOrder, Flight request, int numPlansToShow);
-//	}
-//	
-//	public City makeCity(){
-//		City city = new City(String name);
-//	}
-//	
-//	public Calendar makeCalendar(){
-//		Calendar departTime = new GregorianCalendar(int year, int month, int dayOfMonth, int hourOfDay, int min);
-//	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -496,19 +479,18 @@ public class Sidebar extends JPanel implements ActionListener {
 				// display error message?
 				// or default 10?
 			}
-			
-			// TODO uncomment this when function added.
-//			flightScheduler.addQuery(cityFrom, cityTo, year, month, day, hour, minute, airline, 
-//					priorityOrderModel, numPlansToShow);
-			
-//			Query query = new Query(preferenceOrder, request, numPlansToShow);
-			
-
 			for(int i = 0; i < 3; i ++){
 				System.out.print(priorityOrderModel.get(i) + " ");
 			}
 			System.out.print("; numOutput: " + numPlansToShow);
 			System.out.println();
+
+			flightScheduler.addQuery(cityFrom, cityTo, departYear, departMonth, departDay, 
+					departHour, departMinute, airline, 
+					priorityOrderModel, numPlansToShow);
+			
+//			Query query = new Query(preferenceOrder, request, numPlansToShow);
+			
 		}
 	}
 }

@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.swing.DefaultListModel;
 import javax.swing.SwingUtilities;
 
 public class FlightScheduler {
@@ -32,5 +33,11 @@ public class FlightScheduler {
         System.out.println("Super sperm");
         
         mainWindow.displayFlights("DISPLAYING A TEST INPUT STRING");
+    }
+    
+    public void addQuery(String cityFrom, String cityTo, int year, int month, 
+    		int day, int hour, int minute, String airline, 
+    		DefaultListModel<String> preferenceOrder, int numFlights){
+    	
     }
 }
