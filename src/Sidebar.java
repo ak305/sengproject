@@ -50,7 +50,7 @@ public class Sidebar extends JPanel implements ActionListener {
 	
 	//Search priority
 	private JList<String> priority;
-	private DefaultListModel<String> priorityModel;
+	private DefaultListModel<String> priorityOrderModel;
 	private JLabel priorityLabel;
 
 	
@@ -74,9 +74,11 @@ public class Sidebar extends JPanel implements ActionListener {
 	private boolean mouseDragging = false;
     private int dragSourceIndex;
 	
+    private FlightScheduler flightScheduler;
 		
-	public Sidebar(String[] cities){
-		this.cities = cities;
+	public Sidebar(FlightScheduler flightScheduler){
+		this.flightScheduler = flightScheduler;
+		String[] cities = {"a","b","c","d"};
 		startCity = new JComboBox(cities);
 		startCityLabel = new JLabel();
 		endCity = new JComboBox(cities);
@@ -141,13 +143,13 @@ public class Sidebar extends JPanel implements ActionListener {
 		
 		priorityLabel = new JLabel();
 
-		priorityModel = new DefaultListModel<String>();
-		priorityModel.ensureCapacity(3);
-		priorityModel.addElement("Time");
-		priorityModel.addElement("Cost");
-		priorityModel.addElement("Airline");
+		priorityOrderModel = new DefaultListModel<String>();
+		priorityOrderModel.ensureCapacity(3);
+		priorityOrderModel.addElement("Time");
+		priorityOrderModel.addElement("Cost");
+		priorityOrderModel.addElement("Airline");
 		
-		priority = new JList<String>(priorityModel);
+		priority = new JList<String>(priorityOrderModel);
 		// http://stackoverflow.com/questions/3804361/how-to-enable-drag-and-drop-inside-jlist
 		priority.addMouseListener(new MouseAdapter() {
 	        @Override
@@ -170,9 +172,9 @@ public class Sidebar extends JPanel implements ActionListener {
 	                int currentIndex = priority.locationToIndex(e.getPoint());
 	                if (currentIndex != dragSourceIndex) {
 	                    int dragTargetIndex = priority.getSelectedIndex();
-	                    String dragElement = priorityModel.get(dragSourceIndex);
-	                    priorityModel.remove(dragSourceIndex);
-	                    priorityModel.add(dragTargetIndex, dragElement);
+	                    String dragElement = priorityOrderModel.get(dragSourceIndex);
+	                    priorityOrderModel.remove(dragSourceIndex);
+	                    priorityOrderModel.add(dragTargetIndex, dragElement);
 	                    dragSourceIndex = currentIndex;
 	                }
 	            }
@@ -440,8 +442,8 @@ public class Sidebar extends JPanel implements ActionListener {
 		// If valid pass values in FlightScheduler object to create new query
 		if(e.getSource().equals(search)){
 			
-//			City cityFrom = new City((String) startCity.getItemAt(startCity.getSelectedIndex()));
-//			City cityTo = new City((String) endCity.getItemAt(endCity.getSelectedIndex()));
+			String cityFrom = (String) startCity.getItemAt(startCity.getSelectedIndex());
+			String cityTo = (String) endCity.getItemAt(endCity.getSelectedIndex());
 			int departYear = (int) date.get(2).getItemAt(date.get(2).getSelectedIndex());
 			int departMonth = date.get(1).getSelectedIndex();
 			int departDay = (int) date.get(0).getItemAt(date.get(0).getSelectedIndex());
@@ -495,11 +497,15 @@ public class Sidebar extends JPanel implements ActionListener {
 				// or default 10?
 			}
 			
+			// TODO uncomment this when function added.
+//			flightScheduler.addQuery(cityFrom, cityTo, year, month, day, hour, minute, airline, 
+//					priorityOrderModel, numPlansToShow);
+			
 //			Query query = new Query(preferenceOrder, request, numPlansToShow);
 			
 
 			for(int i = 0; i < 3; i ++){
-				System.out.print(priorityModel.get(i) + " ");
+				System.out.print(priorityOrderModel.get(i) + " ");
 			}
 			System.out.print("; numOutput: " + numPlansToShow);
 			System.out.println();

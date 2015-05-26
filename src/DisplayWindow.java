@@ -11,8 +11,7 @@ public class DisplayWindow extends JPanel {
 	private JTextField textField;
 	private String output;
 	
-	public DisplayWindow(String output){
-		this.output = output;
+	public DisplayWindow(){
 		
 		setLayout(new BorderLayout());
 		
@@ -57,6 +56,11 @@ public class DisplayWindow extends JPanel {
 		add(leftPadding, BorderLayout.WEST);
 		add(rightPadding, BorderLayout.EAST);
 		add(textField, BorderLayout.CENTER);
+	}
+	
+	public void displayFlights(String flightList){
+		output = flightList;
+		textField.setText(output);
 	}
 	
 }
