@@ -1,12 +1,12 @@
 import java.util.Calendar;
 
-public class Flight {   //TODO: Need to make the class comparator or comparable
+public class Flight {
     private City from;
     private City to;
     private Calendar departTime;
     private Calendar arrivalTime;
     private String airline;
-    private int cost;           //FIXME: Is cost needed? aren't travelTime and cost same thing!?
+    private int cost;
 
     public Flight(City from, City to, Calendar departTime, Calendar arrivalTime, String airline, int cost) {
         this.from = from;
