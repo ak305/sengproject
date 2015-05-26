@@ -100,7 +100,7 @@ public class FlightScheduler {
 					String cityTo = querydata.next();
 
 					DefaultListModel<String> pOrder = new DefaultListModel<String>();
-					
+
 					String airline = null;
 					for (int i = 0; i < 3; i++){
 						String pData = querydata.next();
@@ -110,7 +110,7 @@ public class FlightScheduler {
 						}
 						pOrder.add(i, pData);
 					}
-					
+
 					int numFlights = querydata.nextInt();
 					flightScheduler.addQuery(cityFrom, cityTo, year, month, day, hourTime, minuteTime, airline, pOrder, numFlights);
 
