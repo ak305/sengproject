@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
@@ -7,22 +8,34 @@ import java.util.Scanner;
 
 import javax.swing.DefaultListModel;
 
+import javax.swing.DefaultListModel;
+import javax.swing.SwingUtilities;
+
 public class FlightScheduler {
 	private ArrayList<City> cities;
 	private ArrayList<Flight> flights;
 	private ArrayList<Query> queries;
+	private static MainWindow mainWndow;
 
 	public FlightScheduler(ArrayList<City> cities, ArrayList<Flight> flights,
 			ArrayList<Query> queries) {
 		this.cities = cities;
 		this.flights = flights;
 		this.queries = queries;
+		mainWindow = new MainWindow(this);
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		FlightScheduler flightScheduler = new FlightScheduler(
 				new ArrayList<City>(), new ArrayList<Flight>(),
 				new ArrayList<Query>());
+		
+		SwingUtilities.invokeLater(new Runnable() {
+        	    public void run() {
+                mainWindow.display();
+            }
+	        });
+	//	mainWindow.displayFlights("DISPLAYING A TEST INPUT STRING");
 
 		Scanner flightdata = null;
 		Scanner newLine = null;
@@ -183,5 +196,4 @@ public class FlightScheduler {
 				airline, cost);
 		this.flights.add(newFlight);
 	}
-
 }
