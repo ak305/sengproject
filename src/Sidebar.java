@@ -68,8 +68,8 @@ public class Sidebar extends JPanel implements ActionListener {
 	//clear
 	private JButton clear;
 	
-	private String[] cities;
-	private String[] airlineList;
+	private ArrayList<String> cityNames;
+	private ArrayList<String> airlineList;
 	
 	private boolean mouseDragging = false;
     private int dragSourceIndex;
@@ -78,10 +78,17 @@ public class Sidebar extends JPanel implements ActionListener {
 		
 	public Sidebar(FlightScheduler flightScheduler){
 		this.flightScheduler = flightScheduler;
-		String[] cities = {"a","b","c","d"};
-		startCity = new JComboBox(cities);
+//		String[] cities = {"a","b","c","d"};
+		// TODO get list of cities
+		// get list of airlines
+		
+		cityNames = flightScheduler.getCityNames();
+		airlineList = flightScheduler.getAirlines();
+		airlineList.add(0, "None");
+		
+		startCity = new JComboBox(cityNames.toArray());
 		startCityLabel = new JLabel();
-		endCity = new JComboBox(cities);
+		endCity = new JComboBox(cityNames.toArray());
 		endCityLabel = new JLabel();
 		date = new ArrayList<JComboBox>();
 		dateLabel = new JLabel();
@@ -118,12 +125,12 @@ public class Sidebar extends JPanel implements ActionListener {
 		time.add(new JComboBox(hour));
 		time.add(new JComboBox(minute));
 		
-		String[] listAirline = {"None", "Virgin", "Qantas"};
-		airlines = new JComboBox(listAirline);
+//		String[] listAirline = {"None", "Virgin", "Qantas"};
+		airlines = new JComboBox(airlineList.toArray());
 		airlineLabel = new JLabel();
 		numberFormat.getIntegerInstance();
 		numOutput = new JFormattedTextField(numberFormat);
-		numOutput.setValue(10);
+		numOutput.setValue(5);
 		numOutput.setFocusLostBehavior(JFormattedTextField.PERSIST);
 		numOutput.addFocusListener(new FocusAdapter() {
 			@Override
@@ -197,7 +204,7 @@ public class Sidebar extends JPanel implements ActionListener {
 		minuteLabel.setText("Min:");
 		airlineLabel.setText("Airline Preference: ");
 		numOutputLabel.setText("No. Routes: ");
-		priorityLabel.setText("Flight Priority Order: ");
+		priorityLabel.setText("<html>Flight Priority Order: <b><font color=#B82E00>(?)</font></b></html>");
 		
 		
 		JPanel container = new JPanel();
@@ -227,7 +234,7 @@ public class Sidebar extends JPanel implements ActionListener {
 		// container 2
 		// priority
 		JScrollPane pane = new JScrollPane();
-		pane.setPreferredSize(new Dimension(100, 70));
+		pane.setPreferredSize(new Dimension(100, 56));
 		pane.getViewport().add(priority);
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 0.5;
@@ -243,8 +250,8 @@ public class Sidebar extends JPanel implements ActionListener {
 		container2.add(priorityLabel, c);
 		
 		JLabel order = new JLabel();
-		order.setText("<html>1 <p>2 <p>3 <p><b><font color=#B82E00>(?)</font></b><p></html>");
-		order.setToolTipText("Click and drag options to rearrange priority order, "
+		order.setText("<html>1 <p>2 <p>3 <p></html>");
+		priorityLabel.setToolTipText("Click and drag options to rearrange priority order, "
 				+ "with 1 as highest priority");
 		c.fill = GridBagConstraints.VERTICAL;
 		c.weightx = 0.1;
