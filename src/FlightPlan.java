@@ -4,11 +4,11 @@ import java.util.ArrayList;
 public class FlightPlan {
     private ArrayList<Flight> flightPath;
     private int totalCost;
-    private long totalTime;
+    private int totalTime;
     private int freqFlierHours;
     private City currentCity;
 
-    FlightPlan(City currentCity, ArrayList<Flight> flightPath, int totalCost, long totalTime, int freqFlierHours) {
+    FlightPlan(City currentCity, ArrayList<Flight> flightPath, int totalCost, int totalTime, int freqFlierHours) {
         this.currentCity = currentCity;
         this.flightPath = flightPath;
         this.totalCost = totalCost;
@@ -36,7 +36,7 @@ public class FlightPlan {
      *
      * @return
      */
-    public long getTotalTime() {
+    public int getTotalTime() {
         return totalTime;
     }
 

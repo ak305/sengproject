@@ -101,7 +101,7 @@ public class Query {
                 flight.getTo(),
                 newPath,
                 currentPlan.getTotalCost() + flight.getCost(),
-                flight.getDepartTime().getTimeInMillis() - request.getDepartTime().getTimeInMillis(),   // Changed this to long to handle times better(works nicer with calender)
+                currentPlan.getTotalTime() + flight.getTravelTime(),   // Changed this to long to handle times better(works nicer with calender)
                 freqFlierPoints
         );
     }
