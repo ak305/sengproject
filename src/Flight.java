@@ -6,13 +6,15 @@ public class Flight {   //TODO: Need to make the class comparator or comparable
     private Calendar departTime;
     private Calendar arrivalTime;
     private String airline;
-    private int cost;           //FIXME: Is cost needed? aren't travelTime and cost same thing!?
+    private int cost;
+    private int travelTime;
 
-    public Flight(City from, City to, Calendar departTime, Calendar arrivalTime, String airline, int cost) {
+    public Flight(City from, City to, Calendar departTime, Calendar arrivalTime, int travelTime, String airline, int cost) {
         this.from = from;
         this.to = to;
         this.departTime = departTime;
         this.arrivalTime = arrivalTime;
+        this.travelTime = travelTime;
         this.airline = airline;
         this.cost = cost;
     }
@@ -53,5 +55,9 @@ public class Flight {   //TODO: Need to make the class comparator or comparable
     public int getCost() {
         return cost;
     }
-
+    
+    public int getTravelTime(){
+    	return travelTime;
+    }
+    
 }

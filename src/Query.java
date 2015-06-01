@@ -1,5 +1,5 @@
-import java.util.ArrayList;
-import java.util.Collections;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.*;
 
 public class Query {
@@ -125,5 +125,40 @@ public class Query {
                 flight.getDepartTime().getTimeInMillis() - request.getDepartTime().getTimeInMillis(),   // Changed this to long to handle times better(works nicer with calender)
                 freqFlierPoints
         );
+    }
+    
+    public void printFlightPlan(){
+    	int totalCost = 0;
+    	int totalTime = 0;
+    	int totalFlierPoints = 0;
+    	
+    	ByteArrayOutputStream outputString = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(outputString);
+
+        PrintStream old = System.out;
+
+        System.setOut(ps);
+        
+    	for(FlightPlan fp : flightPlans){
+    		for(Flight f: fp.getFlightPath()){
+    			int day = f.getDepartTime().get(Calendar.DAY_OF_MONTH);
+    			int month = f.getDepartTime().get(Calendar.MONTH);
+    			int year = f.getDepartTime().get(Calendar.YEAR);
+    			int hour = f.getDepartTime().get(Calendar.HOUR_OF_DAY);
+    			int minute = f.getDepartTime().get(Calendar.MINUTE);
+    			String cityFrom = f.getFrom().getName();
+    			String cityTo = f.getTo().getName();
+    			int duration = f.getTravelTime();
+    			String airline = f.getAirline();
+    			int cost = f.getCost();
+    			
+    			System.out.println("[" + day + "/" + month + "/" + year + ", " + hour + ":" + minute + ", " + 
+    					cityFrom + ", " + cityTo + ", " + duration + ", " + airline + ", " + cost + "]");    			
+    		}
+    	}
+    	System.out.flush();
+        System.setOut(old);
+
+        System.out.println(outputString.toString());
     }
 }

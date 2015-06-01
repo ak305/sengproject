@@ -496,6 +496,7 @@ public class Sidebar extends JPanel implements ActionListener {
 					departHour, departMinute, airline, 
 					priorityOrderModel, numPlansToShow);
 			
+			
 //			Query query = new Query(preferenceOrder, request, numPlansToShow);
 			
 		}

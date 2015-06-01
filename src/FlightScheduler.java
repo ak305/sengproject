@@ -209,7 +209,7 @@ public class FlightScheduler {
 		
 		Calendar arrivalTime = (Calendar) departTime.clone();
 		arrivalTime.add(Calendar.MINUTE, travelTime);
-		Flight newFlight = new Flight(from, to, departTime, arrivalTime, airline, cost);
+		Flight newFlight = new Flight(from, to, departTime, arrivalTime, travelTime, airline, cost);
 		this.flights.add(newFlight);
 	}
 	
