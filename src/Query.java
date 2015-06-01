@@ -1,6 +1,5 @@
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.*;
+import java.util.PriorityQueue;
 
 public class Query {
     private ArrayList<Preference> preferenceOrder;      // Order of preference - sorting
@@ -13,14 +12,6 @@ public class Query {
         this.request = request;
         this.flightPlans = new ArrayList<FlightPlan>();
         this.numPlansToShow = numPlansToShow;
-    }
-
-    /**
-     * Gets the airline that the request would prefer to use.
-     * @return preferred Airline
-     */
-    public String getPreferredAirline() {
-        return request.getAirline();
     }
 
     public ArrayList<FlightPlan> getFlightPlans() { return flightPlans; }
@@ -78,18 +69,6 @@ public class Query {
 
         }
         flightPlans.addAll(endPlans);
-    }
-
-    /**
-     * Sorts the flightPlans by the preferences the query specifies.
-     */
-    private void sortFlightPlans() {
-        // Irrelevant now as we have chained comparators
-        Collections.sort(flightPlans, preferenceOrder.get(0));
-        for (FlightPlan fp: flightPlans) {
-
-        }
-
     }
 
     /////////////////////
