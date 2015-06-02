@@ -165,7 +165,7 @@ public class FlightScheduler {
 
 		// traveltime & cost not inputted (leave as -1)
 		Flight request = new Flight(this.getCity(cityFrom),
-				this.getCity(cityTo), departTime, null, airline, -1);
+				this.getCity(cityTo), departTime, null, 0, airline, -1);
 
 		ArrayList<Preference> pOrder = new ArrayList<Preference>();
 		for (int i = 0; i < 3; i++) {
