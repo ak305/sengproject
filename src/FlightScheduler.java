@@ -1,24 +1,20 @@
-import java.io.IOException;
+import javax.swing.*;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Scanner;
 
-import javax.swing.DefaultListModel;
-
-import javax.swing.DefaultListModel;
-import javax.swing.SwingUtilities;
-
 public class FlightScheduler {
 	private ArrayList<City> cities;
 	private ArrayList<Flight> flights;
 	private ArrayList<Query> queries;
-	private static MainWindow mainWndow;
+	private static MainWindow mainWindow;
 
 	public FlightScheduler(ArrayList<City> cities, ArrayList<Flight> flights,
-			ArrayList<Query> queries) {
+			ArrayList<Query> queries) throws IOException {
 		this.cities = cities;
 		this.flights = flights;
 		this.queries = queries;
@@ -35,7 +31,6 @@ public class FlightScheduler {
                 mainWindow.display();
             }
 	        });
-	//	mainWindow.displayFlights("DISPLAYING A TEST INPUT STRING");
 
 		Scanner flightdata = null;
 		try {
@@ -173,7 +168,7 @@ public class FlightScheduler {
 				minute);
 
 		// traveltime & cost not inputted (leave as -1)
-		Flight request = new Flight(this.getCity(cityFrom),	this.getCity(cityTo), departTime, null, airline, -1);
+		Flight request = new Flight(this.getCity(cityFrom),	this.getCity(cityTo), departTime, -1, airline, -1);
 
 		ArrayList<Preference> pOrder = new ArrayList<Preference>();
 		for (int i = 0; i < 3; i++) {
@@ -212,8 +207,7 @@ public class FlightScheduler {
 		return null;
 	}
 
-	public void addFlight(City from, City to, Calendar departTime,
-			int travelTime, String airline, int cost) {
+	public void addFlight(City from, City to, Calendar departTime, int travelTime, String airline, int cost) {
 		Flight newFlight = new Flight(from, to, departTime, travelTime, airline, cost);
 		this.flights.add(newFlight);
 	}
