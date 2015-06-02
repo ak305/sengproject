@@ -109,7 +109,7 @@ public class Query {
         );
     }
     
-    public String getFlightPlan(){
+    public String getFlightPlanToString(){
     	ByteArrayOutputStream outputString = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(outputString);
 

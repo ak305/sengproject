@@ -65,7 +65,7 @@ public class FlightScheduler {
 					Calendar departTime = new GregorianCalendar(year, month,
 							day, hourTime, minuteTime);
 					
-					if (month != departTime.get(Calendar.MONTH)){
+					if (month != departTime.get(Calendar.MONTH) && hourTime != departTime.get(Calendar.HOUR_OF_DAY) && minuteTime != departTime.get(Calendar.MINUTE)){
 						System.out.println("Invalid date/time in entry: " + "[" + day + "/" + month + "/" + year + ", " + hourTime + ":" + minuteTime + ", " + cityFrom + ", " + cityTo + ", " + travelTime + ", " + airline + ", " + cost + "]");
 					} else {
 						City from = flightScheduler.addCity(cityFrom);
@@ -239,7 +239,7 @@ public class FlightScheduler {
 	public void printQueries(){
 		for(Query q : queries){
 			q.searchForFlightPlans();
-			String output = q.getFlightPlan();
+			String output = q.getFlightPlanToString();
 			System.out.println(output);
 			if(guiOpen){
 				 mainWindow.displayFlights(output);
