@@ -110,19 +110,13 @@ public class Query {
     }
     
     public String getFlightPlan(){
-    	searchForFlightPlans();
-    	int totalCost;
-    	int totalTime;
-    	int totalFlierPoints;
-    	
     	ByteArrayOutputStream outputString = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(outputString);
 
         PrintStream old = System.out;
 
         System.setOut(ps);
-        
-//        System.out.println();
+
         int qDay = request.getDepartTime().get(Calendar.DAY_OF_MONTH);
 		int qMonth = request.getDepartTime().get(Calendar.MONTH);
 		int qYear = request.getDepartTime().get(Calendar.YEAR);
@@ -133,22 +127,15 @@ public class Query {
 		String pref1 = preferenceOrder.get(0).name();
 		String pref2 = preferenceOrder.get(1).name();
 		String pref3 = preferenceOrder.get(2).name();
-        System.out.print("( [ " + qDay + "/" + qMonth + "/" + qYear + ", " + qHour + ":" + qMinute + ", " + 
-    					qCityFrom + ", " + qCityTo + ", (" + pref1 + ", " + pref2 + ", " + pref3 + "), " +
-    					numPlansToShow + "]");
+        System.out.printf("[%s/%s/%s, %02d:%02d, %s, %s, (%s, %s, %s), %d]",
+                qDay, qMonth, qYear, qHour, qMinute, qCityFrom, qCityTo, pref1, pref2, pref3, numPlansToShow
+        );
+                 System.out.println();
         System.out.println();
-        System.out.print(", [ ");
-        
-        System.out.println();
-        System.out.println();
-//        System.out.println(flightPlans.toString());
         if(flightPlans.isEmpty()){
         	System.out.println("flight plans empty");
         }
     	for(FlightPlan fp : flightPlans){
-    		totalCost = 0;
-        	totalTime = 0;
-        	totalFlierPoints = 0;
     		System.out.print("(( ");
     		for(Flight f: fp.getFlightPath()){
     			int day = f.getDepartTime().get(Calendar.DAY_OF_MONTH);
@@ -161,23 +148,20 @@ public class Query {
     			int duration = f.getTravelTime();
     			String airline = f.getAirline();
     			int cost = f.getCost();
-    			
-    			totalCost += cost;
-    			totalTime += duration; // TODO + delay time
+
     			// TODO beginnning formatting, with the "(( " needs some work
     			System.out.println();
-    			System.out.print("[" + day + "/" + month + "/" + year + ", " + hour + ":" + minute + ", " + 
-    					cityFrom + ", " + cityTo + ", " + duration + ", " + airline + ", " + cost + "]");    			
+                System.out.printf("[%s/%s/%s, %02d:%02d, %s, %s, %d, %s, %d]",
+                        day, month, year, hour, minute, cityFrom, cityTo, duration, airline, cost
+                );
     		}
-    		System.out.print("), " + totalCost + ", " /* + totalTime + ", " + totalFlierPoints */ + ")" );
+    		System.out.print("), " + fp.getTotalCost() + ", " + fp.getTotalTime() + ", " + fp.getFreqFlierHours() + ")");
     		System.out.println();
-    		
-
     	}
+
     	System.out.flush();
         System.setOut(old);
 
-        //System.out.println(outputString.toString());
         return outputString.toString();
     }
 }
