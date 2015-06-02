@@ -109,9 +109,13 @@ public class Query {
         );
     }
     
-    public String getFlightPlanToString(){
+
+    public String getFlightPlan(boolean guiOpen){
     	ByteArrayOutputStream outputString = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(outputString);
+        
+        ByteArrayOutputStream displayString = new ByteArrayOutputStream();
+        PrintStream ds = new PrintStream(displayString);
 
         PrintStream old = System.out;
 
@@ -131,22 +135,26 @@ public class Query {
             if (builder.length() != 0) {
                 builder.append(", ");
             }
-            if (preference.equals(Preference.NAME) && !request.getAirline().equals("None")) {
+            if (preference.equals(Preference.NAME)){
                 builder.append(request.getAirline());
             } else {
                 builder.append(preference.toString());
             }
         }
 
-        System.out.printf("( [%s/%s/%s, %02d:%02d, %s, %s, (%s), %d]\n",
+        System.out.printf("( [ %s/%s/%s, %02d:%02d, %s, %s, (%s), %d ]\n",
                 qDay, qMonth, qYear, qHour, qMinute, qCityFrom, qCityTo, builder.toString(), numPlansToShow
         );
-
-        if(flightPlans.isEmpty()){
-        	System.out.println("flight plans empty");
-        }
         System.out.print(", [ ");
         
+        System.setOut(ds);
+        System.out.printf("Query:  %-13s to  %-13s  on  %s/%s/%s  at  %02d:%02d,  (%s),  Max Routes Shown: %d",
+				qCityFrom, qCityTo, qDay, qMonth, qYear, qHour, qMinute,  builder.toString(), numPlansToShow);
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.setOut(ps);
+
         int flightPlanCount = 0;
         
     	for(FlightPlan fp : flightPlans){
@@ -158,6 +166,11 @@ public class Query {
         	}else{
         		System.out.print("    (( ");
         	}
+        	System.setOut(ds);
+			System.out.printf("Route %d:",flightPlanCount+1);
+			System.out.println();
+			System.setOut(ps);
+
         	
     		for(Flight f: fp.getFlightPath()){
     			int day = f.getDepartTime().get(Calendar.DAY_OF_MONTH);
@@ -179,19 +192,36 @@ public class Query {
                 System.out.printf("[ %s/%s/%s, %02d:%02d, %s, %s, %d, %s, %d ]",
                         day, month, year, hour, minute, cityFrom, cityTo, duration, airline, cost
                 );
+                System.setOut(ds);
+                System.out.printf("            %-13s to  %-13s %s/%s/%s,  %02d:%02d,  Duration: %d,  Cost: %d,  Airline: %s",
+                		cityFrom, cityTo, day, month, year, hour, minute, duration, cost, airline);
+                System.out.println();
+                System.setOut(ps);
+                
     		}
     		System.out.print("), " + fp.getTotalCost() + ", " + fp.getTotalTime() + ", " + fp.getFreqFlierHours() + ")");
             if (!getFlightPlans().get(getFlightPlans().size()-1).equals(fp)) {
                 System.out.println();
             }
+            System.setOut(ds);
+            System.out.print("            ---------------------------------------------------------------------------------- ");
+            System.out.println();
+            System.out.printf("            Total Time: %d,  Total Cost: %d,  Frequent Flier Points Earned: %d",
+            		fp.getTotalTime(), fp.getTotalCost(), fp.getFreqFlierHours());
+            System.out.println();
+            System.out.println();
+            System.setOut(ps);
     		flightPlanCount++;
     	}
         System.out.print("])");
-    	
+        System.out.println();
 
     	System.out.flush();
         System.setOut(old);
-
-        return outputString.toString();
+        if(guiOpen){
+        	return displayString.toString();
+        }else{
+        	return outputString.toString();
+        }
     }
 }

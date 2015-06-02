@@ -145,8 +145,7 @@ public class FlightScheduler {
 				if (querydata != null)
 					querydata.close();
 			}
-//			System.out.println("end query file");
-//			flightScheduler.printQueries();
+			flightScheduler.printQueries();
 		}
 		
 		if (args.length == 1) {
@@ -239,7 +238,7 @@ public class FlightScheduler {
 	public void printQueries(){
 		for(Query q : queries){
 			q.searchForFlightPlans();
-			String output = q.getFlightPlanToString();
+			String output = q.getFlightPlan(guiOpen);
 			System.out.println(output);
 			if(guiOpen){
 				 mainWindow.displayFlights(output);
