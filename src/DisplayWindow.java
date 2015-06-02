@@ -8,7 +8,7 @@ import javax.swing.*;
 
 
 public class DisplayWindow extends JPanel {
-	private JTextField textField;
+	private JTextArea textArea;
 	private String output;
 	
 	public DisplayWindow(){
@@ -16,7 +16,7 @@ public class DisplayWindow extends JPanel {
 		setLayout(new BorderLayout());
 		
 //		panel = new JPanel();
-		textField = new JTextField();
+		textArea = new JTextArea();
 		
 		display();
 	}
@@ -25,15 +25,16 @@ public class DisplayWindow extends JPanel {
 //		panel.setBackground(Color.darkGray);
 		setPreferredSize(new Dimension(550,600));
 		setLocation(50, 50);
-		textField.addFocusListener(new FocusAdapter() {
+		textArea.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusGained(FocusEvent e) {
-				textField.setText(textField.getText());
-				textField.selectAll();
+				textArea.setText(textArea.getText());
+				textArea.selectAll();
 			}
 		});
-		textField.setText(output);
-		textField.setPreferredSize(new Dimension(400, 400));
+		textArea.setText(output);
+		textArea.setPreferredSize(new Dimension(400, 400));
+		textArea.setEditable(false);
 //		textField.setLocation(50, 50);
 		
 		JPanel topPadding = new JPanel();
@@ -55,12 +56,12 @@ public class DisplayWindow extends JPanel {
 		add(bottomPadding, BorderLayout.SOUTH);
 		add(leftPadding, BorderLayout.WEST);
 		add(rightPadding, BorderLayout.EAST);
-		add(textField, BorderLayout.CENTER);
+		add(textArea, BorderLayout.CENTER);
 	}
 	
 	public void displayFlights(String flightList){
 		output = flightList;
-		textField.setText(output);
+		textArea.setText(output);
 	}
 	
 }

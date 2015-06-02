@@ -109,7 +109,8 @@ public class Query {
         );
     }
     
-    public void printFlightPlan(){
+    public String getFlightPlan(){
+    	searchForFlightPlans();
     	int totalCost;
     	int totalTime;
     	int totalFlierPoints;
@@ -138,6 +139,12 @@ public class Query {
         System.out.println();
         System.out.print(", [ ");
         
+        System.out.println();
+        System.out.println();
+//        System.out.println(flightPlans.toString());
+        if(flightPlans.isEmpty()){
+        	System.out.println("flight plans empty");
+        }
     	for(FlightPlan fp : flightPlans){
     		totalCost = 0;
         	totalTime = 0;
@@ -164,10 +171,13 @@ public class Query {
     		}
     		System.out.print("), " + totalCost + ", " /* + totalTime + ", " + totalFlierPoints */ + ")" );
     		System.out.println();
+    		
+
     	}
     	System.out.flush();
         System.setOut(old);
 
-        System.out.println(outputString.toString());
+        //System.out.println(outputString.toString());
+        return outputString.toString();
     }
 }

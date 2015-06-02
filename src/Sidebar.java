@@ -438,8 +438,6 @@ public class Sidebar extends JPanel implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// Check date
-		// If valid pass values in FlightScheduler object to create new query
 		if(e.getSource().equals(search)){
 			
 			String cityFrom = (String) startCity.getItemAt(startCity.getSelectedIndex());
@@ -455,13 +453,6 @@ public class Sidebar extends JPanel implements ActionListener {
 					departHour, departMinute);
 			String airline = (String) airlines.getItemAt(airlines.getSelectedIndex());
 			
-			
-			// proper dates from calendar.
-			// System.out.println(departTime.get(Calendar.DAY_OF_MONTH) + " " + departTime.get(Calendar.MONTH) + " " + departTime.get(Calendar.YEAR));
-			
-			System.out.println(cityFrom + " " + cityTo + "; " + departDay + " " + departMonth + " " +
-					departYear + "; " + departHour + " " + departMinute  + "; " + airline);
-			
 			if (departMonth != departTime.get(Calendar.MONTH)){
 				System.out.println("Invalid Date");
 				JOptionPane.showMessageDialog(this,
@@ -470,19 +461,6 @@ public class Sidebar extends JPanel implements ActionListener {
 					    JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-
-//			Flight request = new Flight(cityFrom, cityTo, departTime, null, airline, 0);
-			
-//			ArrayList<Preference> preferenceOrder = new ArrayList<Preference>();
-//			for(int i = 0; i < 3; i ++){
-//				if(priorityModel.get(i).equals("Cost")){
-//					preferenceOrder.add(Preference.COST);
-//				}else if(priorityModel.get(i).equals("Time")){
-//					preferenceOrder.add(Preference.TIME);
-//				}else if(priorityModel.get(i).equals("Airline")){
-//					preferenceOrder.add(Preference.NAME);
-//				}
-//			}
 			
 			int numPlansToShow;
 			try{
@@ -496,17 +474,20 @@ public class Sidebar extends JPanel implements ActionListener {
 				// display error message?
 				// or default 10?
 			}
-			for(int i = 0; i < 3; i ++){
-				System.out.print(priorityOrderModel.get(i) + " ");
-			}
-			System.out.print("; numOutput: " + numPlansToShow);
-			System.out.println();
+			
+//			System.out.println(cityFrom + " " + cityTo + "; " + departDay + " " + departMonth + " " +
+//					departYear + "; " + departHour + " " + departMinute  + "; " + airline);
+//			for(int i = 0; i < 3; i ++){
+//				System.out.print(priorityOrderModel.get(i) + " ");
+//			}
+//			System.out.print("; numOutput: " + numPlansToShow);
+//			System.out.println();
 
 			flightScheduler.addQuery(cityFrom, cityTo, departYear, departMonth, departDay, 
 					departHour, departMinute, airline, 
 					priorityOrderModel, numPlansToShow);
 			
-			
+			flightScheduler.printQueries();
 //			Query query = new Query(preferenceOrder, request, numPlansToShow);
 			
 		}
