@@ -1,6 +1,8 @@
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.*;
+import java.util.ArrayList;
+import java.util.PriorityQueue;
 
 public class Query {
     private ArrayList<Preference> preferenceOrder;      // Order of preference - sorting
@@ -13,14 +15,6 @@ public class Query {
         this.request = request;
         this.flightPlans = new ArrayList<FlightPlan>();
         this.numPlansToShow = numPlansToShow;
-    }
-
-    /**
-     * Gets the airline that the request would prefer to use.
-     * @return preferred Airline
-     */
-    public String getPreferredAirline() {
-        return request.getAirline();
     }
 
     public ArrayList<FlightPlan> getFlightPlans() { return flightPlans; }
@@ -80,18 +74,6 @@ public class Query {
         flightPlans.addAll(endPlans);
     }
 
-    /**
-     * Sorts the flightPlans by the preferences the query specifies.
-     */
-    private void sortFlightPlans() {
-        // Irrelevant now as we have chained comparators
-        Collections.sort(flightPlans, preferenceOrder.get(0));
-        for (FlightPlan fp: flightPlans) {
-
-        }
-
-    }
-
     /////////////////////
     // PRIVATE HELPERS //
     /////////////////////
@@ -122,7 +104,7 @@ public class Query {
                 flight.getTo(),
                 newPath,
                 currentPlan.getTotalCost() + flight.getCost(),
-                flight.getDepartTime().getTimeInMillis() - request.getDepartTime().getTimeInMillis(),   // Changed this to long to handle times better(works nicer with calender)
+                currentPlan.getTotalTime() + flight.getTravelTime(),   // Changed this to long to handle times better(works nicer with calender)
                 freqFlierPoints
         );
     }

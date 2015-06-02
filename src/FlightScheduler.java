@@ -1,13 +1,13 @@
-import java.io.IOException;
+import javax.swing.*;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.Scanner;
-
 import javax.swing.DefaultListModel;
 import javax.swing.DefaultListModel;
 import javax.swing.SwingUtilities;
@@ -19,7 +19,7 @@ public class FlightScheduler {
 	private static MainWindow mainWindow;
 
 	public FlightScheduler(ArrayList<City> cities, ArrayList<Flight> flights,
-			ArrayList<Query> queries) {
+			ArrayList<Query> queries) throws IOException {
 		this.cities = cities;
 		this.flights = flights;
 		this.queries = queries;
@@ -35,113 +35,128 @@ public class FlightScheduler {
 		FlightScheduler flightScheduler = new FlightScheduler(
 				new ArrayList<City>(), new ArrayList<Flight>(),
 				new ArrayList<Query>());
-		
+
 	//	mainWindow.displayFlights("DISPLAYING A TEST INPUT STRING");
+		SwingUtilities.invokeLater(new Runnable() {
+        	    public void run() {
+                mainWindow.display();
+            }
+	        });
 
 		Scanner flightdata = null;
-		Scanner newLine = null;
 		try {
-			// scanner for flightdata file
+			// scanner for flightdata file -> EXAMPLE DATA:   [ 29/2/2000, 9:00, Adelaide, Sydney, 110, Qantas, 200 ]
 			flightdata = new Scanner(new FileReader(args[0]));
+		    ArrayList<String> parseresults = new ArrayList<String>();
+		    flightdata.useDelimiter("/|,|:|\\]|\\n|\\[|\\s+");
+			while (flightdata.hasNext()) {
 
-			while (flightdata.hasNextLine()) {
-				// scanner for each new line
-				newLine = new Scanner(flightdata.nextLine());
-				String command = newLine.next();
-
-				if (command.equals("Flight")) {
-					// Flight -> [Date, Time, Name, Name, Duration, Name,
-					// Number] *Note last Number=cost
-					// assumes input is (for example):
-					// Flight 29/3/2015 22:30 Sydney Melbourne 300 Qantas 500
-
-					int day = flightdata.nextInt();
-					int month = flightdata.nextInt();
-					int year = flightdata.nextInt();
-					int hourTime = flightdata.nextInt();
-					int minuteTime = flightdata.nextInt();
-
-					String cityFrom = flightdata.next();
-					String cityTo = flightdata.next();
-
-					int travelTime = flightdata.nextInt();
-					String airline = flightdata.next();
-					int cost = flightdata.nextInt();
-
+			    String nextChar = flightdata.next();
+			    if (!nextChar.equals("")){
+			    	parseresults.add(nextChar);
+			    }
+			}
+//		    for (String j : parseresults){
+//		    	System.out.println(j);
+//		    }
+			int i = 0;
+			while (i < parseresults.size()){
+			    try {
+					int day = Integer.parseInt(parseresults.get(i++));
+					int month = Integer.parseInt(parseresults.get(i++));
+					int year = Integer.parseInt(parseresults.get(i++));
+					int hourTime = Integer.parseInt(parseresults.get(i++));
+					int minuteTime = Integer.parseInt(parseresults.get(i++));
+		
+					String cityFrom = parseresults.get(i++);
+					String cityTo = parseresults.get(i++);
+		
+					int travelTime = Integer.parseInt(parseresults.get(i++));
+					String airline = parseresults.get(i++);
+					int cost = Integer.parseInt(parseresults.get(i++));
+		
 					Calendar departTime = new GregorianCalendar(year, month,
 							day, hourTime, minuteTime);
-
-					City from = flightScheduler.addCity(cityFrom);
-					City to = flightScheduler.addCity(cityTo);
-
-					flightScheduler.addFlight(from, to, departTime, travelTime,
-							airline, cost);
-
-				} else {
-					System.out.println("incorrectly formatted flight data");
-				}
+					
+					if (month != departTime.get(Calendar.MONTH)){
+						System.out.println("Invalid date/time in entry: " + "[" + day + "/" + month + "/" + year + ", " + hourTime + ":" + minuteTime + ", " + cityFrom + ", " + cityTo + ", " + travelTime + ", " + airline + ", " + cost + "]");
+					} else {
+						City from = flightScheduler.addCity(cityFrom);
+						City to = flightScheduler.addCity(cityTo);
+			
+						flightScheduler.addFlight(from, to, departTime, travelTime,
+								airline, cost);
+					}
+		
+			    } catch (NumberFormatException e){
+			    	System.out.println("incorrectly formatted flight data");
+			    	return;
+			    }
 			}
+			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} finally {
 			if (flightdata != null)
 				flightdata.close();
-			if (newLine != null)
-				newLine.close();
 		}
 		
 		if (args.length == 2) {
 			// Scan for query
 			Scanner querydata = null;
-			newLine = null;
 			try {
-				// scanner for querydata file
+				// scanner for querydata file -> EXAMPLEDATA: [29/2/2000, 08:40, Adelaide, Singapore, (Qantas, Cost, Time), 1]
 				querydata = new Scanner(new FileReader(args[1]));
-				while (querydata.hasNextLine()) {
-					// scanner for each new line
-					newLine = new Scanner(querydata.nextLine());
-					String command = newLine.next();
-	
-					if (command.equals("Query")) {
-						// Query => [Date, Time, Name, Name, PreferenceOrder, Number] *Note last Number = how many results to display.
-						// assumes input is (for example):
-						// Query 29/3/2015 22:30 Sydney Melbourne Cost Time Name 10
-	
-						int day = querydata.nextInt();
-						int month = querydata.nextInt();
-						int year = querydata.nextInt();
-						int hourTime = querydata.nextInt();
-						int minuteTime = querydata.nextInt();
-	
-						String cityFrom = querydata.next();
-						String cityTo = querydata.next();
-	
+			    querydata.useDelimiter("/|,|:|\\]|\\n|\\[|\\s+|\\(|\\)");
+				ArrayList<String> parseresults = new ArrayList<String>();
+				while (querydata.hasNext()) {
+				
+				    String nextChar = querydata.next();
+				    if (!nextChar.equals("")){
+				    	parseresults.add(nextChar);
+				    }
+				    
+				}
+//			    for (String j : parseresults){
+//			    	System.out.println(j);
+//			    }
+				int i = 0;
+				while (i < parseresults.size()){
+				    try {
+						int day = Integer.parseInt(parseresults.get(i++));
+						int month = Integer.parseInt(parseresults.get(i++));
+						int year = Integer.parseInt(parseresults.get(i++));
+						int hourTime = Integer.parseInt(parseresults.get(i++));
+						int minuteTime = Integer.parseInt(parseresults.get(i++));
+			
+						String cityFrom = parseresults.get(i++);
+						String cityTo = parseresults.get(i++);
+			
 						DefaultListModel<String> pOrder = new DefaultListModel<String>();
-	
 						String airline = null;
-						for (int i = 0; i < 3; i++){
-							String pData = querydata.next();
+						
+						for (int k = 0; k < 3; k++){
+							String pData = parseresults.get(i++);
 							// whatever the string is that isn't 'cost' or 'time' is the airline we need.
 							if (!pData.equals("Cost") && !pData.equals("Time")){
 								airline = pData;
 							}
-							pOrder.add(i, pData);
+							pOrder.add(k, pData);
 						}
-	
-						int numFlights = querydata.nextInt();
+						
+						int numFlights = Integer.parseInt(parseresults.get(i++));
 						flightScheduler.addQuery(cityFrom, cityTo, year, month, day, hourTime, minuteTime, airline, pOrder, numFlights);
-	
-					} else {
-						System.out.println("incorrectly formatted query data");
-					}
+						
+				    } catch (NumberFormatException e){
+				    	System.out.println("incorrectly formatted query data");
+				    	return;
+				    }
 				}
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} finally {
 				if (querydata != null)
 					querydata.close();
-				if (newLine != null)
-					newLine.close();
 			}
 		}
 		
@@ -164,8 +179,7 @@ public class FlightScheduler {
 				minute);
 
 		// traveltime & cost not inputted (leave as -1)
-		Flight request = new Flight(this.getCity(cityFrom),
-				this.getCity(cityTo), departTime, null, 0, airline, -1);
+		Flight request = new Flight(this.getCity(cityFrom),	this.getCity(cityTo), departTime, -1, airline, -1);
 
 		ArrayList<Preference> pOrder = new ArrayList<Preference>();
 		for (int i = 0; i < 3; i++) {
@@ -204,12 +218,8 @@ public class FlightScheduler {
 		return null;
 	}
 
-	public void addFlight(City from, City to, Calendar departTime,
-			int travelTime, String airline, int cost) {
-		
-		Calendar arrivalTime = (Calendar) departTime.clone();
-		arrivalTime.add(Calendar.MINUTE, travelTime);
-		Flight newFlight = new Flight(from, to, departTime, arrivalTime, travelTime, airline, cost);
+	public void addFlight(City from, City to, Calendar departTime, int travelTime, String airline, int cost) {
+		Flight newFlight = new Flight(from, to, departTime, travelTime, airline, cost);
 		this.flights.add(newFlight);
 	}
 	

@@ -1,19 +1,17 @@
 import java.util.Calendar;
 
-public class Flight {   //TODO: Need to make the class comparator or comparable
+public class Flight {
     private City from;
     private City to;
     private Calendar departTime;
-    private Calendar arrivalTime;
+    private int travelTime;
     private String airline;
     private int cost;
-    private int travelTime;
 
-    public Flight(City from, City to, Calendar departTime, Calendar arrivalTime, int travelTime, String airline, int cost) {
+    public Flight(City from, City to, Calendar departTime, int travelTime, String airline, int cost) {
         this.from = from;
         this.to = to;
         this.departTime = departTime;
-        this.arrivalTime = arrivalTime;
         this.travelTime = travelTime;
         this.airline = airline;
         this.cost = cost;
@@ -38,7 +36,13 @@ public class Flight {   //TODO: Need to make the class comparator or comparable
         return departTime;
     }
 
-    public Calendar getArrivalTime() { return arrivalTime; }
+    /**
+     * Returns the time taken to travel from A to B.
+     * @return travel time
+     */
+    public int getTravelTime() {
+        return travelTime;
+    }
 
     /**
      * Returns the airline name of this flight.
@@ -49,15 +53,16 @@ public class Flight {   //TODO: Need to make the class comparator or comparable
     }
 
     /**
-     * Gets the cost of the flight??????
+     * Gets the cost of the flight
      * @return cost
      */
     public int getCost() {
         return cost;
     }
-    
-    public int getTravelTime(){
-    	return travelTime;
+
+    public Calendar getArrivalTime() {
+        Calendar arrivalTime = (Calendar)departTime.clone();
+        arrivalTime.add(Calendar.MINUTE, travelTime);
+        return arrivalTime;
     }
-    
 }
