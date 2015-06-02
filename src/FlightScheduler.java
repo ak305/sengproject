@@ -2,15 +2,7 @@ import javax.swing.*;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.GregorianCalendar;
-import java.util.Scanner;
-import javax.swing.DefaultListModel;
-import javax.swing.DefaultListModel;
-import javax.swing.SwingUtilities;
+import java.util.*;
 
 public class FlightScheduler {
 	private ArrayList<City> cities;
@@ -219,6 +211,7 @@ public class FlightScheduler {
 	public void addFlight(City from, City to, Calendar departTime, int travelTime, String airline, int cost) {
 		Flight newFlight = new Flight(from, to, departTime, travelTime, airline, cost);
 		this.flights.add(newFlight);
+		from.getOutgoingFlights().add(newFlight);
 	}
 	
 	public ArrayList<String> getAirlines() {
