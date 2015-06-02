@@ -98,7 +98,7 @@ public class Query {
         newPath.add(flight);
         int freqFlierPoints = currentPlan.getFreqFlierHours();
         if (request.getAirline().equals(flight.getAirline())) {
-            freqFlierPoints += flight.getCost();
+            freqFlierPoints += flight.getTravelTime();
         }
         return new FlightPlan(
                 flight.getTo(),
@@ -135,8 +135,24 @@ public class Query {
         if(flightPlans.isEmpty()){
         	System.out.println("flight plans empty");
         }
+        System.out.print(", [ ");
+        
+        int flightPlanCount = 0;
+        
     	for(FlightPlan fp : flightPlans){
     		System.out.print("(( ");
+    		if(fp.getFlightPath() == null) continue;
+    		totalCost = 0;
+        	totalTime = 0;
+        	totalFlierPoints = fp.getFreqFlierHours();
+        	int flightCount = 0;
+        	
+        	if(flightPlanCount == 0){
+        		System.out.print("(( ");
+        	}else{
+        		System.out.print("    (( ");
+        	}
+        	
     		for(Flight f: fp.getFlightPath()){
     			int day = f.getDepartTime().get(Calendar.DAY_OF_MONTH);
     			int month = f.getDepartTime().get(Calendar.MONTH);
@@ -145,9 +161,20 @@ public class Query {
     			int minute = f.getDepartTime().get(Calendar.MINUTE);
     			String cityFrom = f.getFrom().getName();
     			String cityTo = f.getTo().getName();
-    			int duration = f.getTravelTime();
     			String airline = f.getAirline();
     			int cost = f.getCost();
+    			int duration = f.getTravelTime();
+    			
+    			totalCost += cost;
+    			totalTime += duration;
+
+    			if(flightCount != 0){
+    				System.out.println();
+    				System.out.print("       ");
+    			}
+    			System.out.print("[" + day + "/" + month + "/" + year + ", " + hour + ":" + minute + ", " + 
+    					cityFrom + ", " + cityTo + ", " + duration + ", " + airline + ", " + cost + "]");  
+    			flightCount++;
 
     			// TODO beginnning formatting, with the "(( " needs some work
     			System.out.println();
@@ -155,9 +182,12 @@ public class Query {
                         day, month, year, hour, minute, cityFrom, cityTo, duration, airline, cost
                 );
     		}
+    		System.out.print("), " + totalCost + ", "  + totalTime + ", " + totalFlierPoints + ")" );
     		System.out.print("), " + fp.getTotalCost() + ", " + fp.getTotalTime() + ", " + fp.getFreqFlierHours() + ")");
     		System.out.println();
+    		flightPlanCount++;
     	}
+    	
 
     	System.out.flush();
         System.setOut(old);
