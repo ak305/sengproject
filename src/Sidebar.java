@@ -206,61 +206,23 @@ public class Sidebar extends JPanel implements ActionListener {
 		numOutputLabel.setText("No. Routes: ");
 		priorityLabel.setText("<html>Flight Priority Order: <b><font color=#B82E00>(?)</font></b></html>");
 		
-		
+		addTopPanel();
+		addMidPanel();
+		addBotPanel();
+	}
+	
+	public void addTopPanel(){
 		JPanel container = new JPanel();
 		container.setPreferredSize(new Dimension(330, 220));
 		container.setBackground(Color.lightGray);
 		container.setLayout(new GridBagLayout());
-		
-		JPanel container2 = new JPanel();
-		container2.setPreferredSize(new Dimension(330, 100));
-		container2.setBackground(Color.lightGray);
-		container2.setLayout(new GridBagLayout());
-		
-		JPanel container3 = new JPanel();
-		container3.setPreferredSize(new Dimension(330, 130));
-		container3.setBackground(Color.lightGray);
-		container3.setLayout(new GridBagLayout());
-		
 		add(container, BorderLayout.NORTH);
-		add(container2, BorderLayout.CENTER);
-		add(container3, BorderLayout.SOUTH);
 		
 		GridBagConstraints c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.NORTH;
 		c.insets = new Insets(10,0,0,0);
-//		c.weighty = 1.0;
-		
-		// container 2
-		// priority
-		JScrollPane pane = new JScrollPane();
-		pane.setPreferredSize(new Dimension(100, 56));
-		pane.getViewport().add(priority);
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.weightx = 0.5;
-		c.gridx = 1;
-		c.gridy = 0;
-		container2.add(pane, c);
-
-		// priority gridy
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.weightx = 0.5;
-		c.gridx = 0;
-		c.gridy = 0;
-		container2.add(priorityLabel, c);
-		
-		JLabel order = new JLabel();
-		order.setText("<html>1 <p>2 <p>3 <p></html>");
-		priorityLabel.setToolTipText("Click and drag options to rearrange priority order, "
-				+ "with 1 as highest priority");
-		c.fill = GridBagConstraints.VERTICAL;
-		c.weightx = 0.1;
-		c.gridx = 2;
-		c.gridy = 0;
-		container2.add(order, c);
-
 		//container 1
-		// flight date - Gridy 2
+				// flight date - Gridy 2
 		
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 0.5;
@@ -346,7 +308,7 @@ public class Sidebar extends JPanel implements ActionListener {
 		c.weightx = 0.5;
 		c.gridx = 0;
 		c.gridy = 0;
-//		c.anchor = GridBagConstraints.NORTH;
+//				c.anchor = GridBagConstraints.NORTH;
 		container.add(startCityLabel, c);
 		
 		c.fill = GridBagConstraints.HORIZONTAL;
@@ -369,10 +331,59 @@ public class Sidebar extends JPanel implements ActionListener {
 		c.gridy = 1;
 		c.gridwidth = 3;
 		container.add(endCity, c);
+	}
+	
+	public void addMidPanel(){
+		JPanel container2 = new JPanel();
+		container2.setPreferredSize(new Dimension(330, 100));
+		container2.setBackground(Color.lightGray);
+		container2.setLayout(new GridBagLayout());
+		add(container2, BorderLayout.CENTER);
 		
+		GridBagConstraints c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.NORTH;
+		c.insets = new Insets(10,0,0,0);
 		
+		JScrollPane pane = new JScrollPane();
+		pane.setPreferredSize(new Dimension(100, 56));
+		pane.getViewport().add(priority);
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 0.5;
+		c.gridx = 1;
+		c.gridy = 0;
+		container2.add(pane, c);
+
+		// priority gridy
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 0.5;
+		c.gridx = 0;
+		c.gridy = 0;
+		container2.add(priorityLabel, c);
+		
+		JLabel order = new JLabel();
+		order.setText("<html>1 <p>2 <p>3 <p></html>");
+		priorityLabel.setToolTipText("Click and drag options to rearrange priority order, "
+				+ "with 1 as highest priority");
+		c.fill = GridBagConstraints.VERTICAL;
+		c.weightx = 0.1;
+		c.gridx = 2;
+		c.gridy = 0;
+		container2.add(order, c);
+	}
+	
+	public void addBotPanel(){
+		JPanel container3 = new JPanel();
+		container3.setPreferredSize(new Dimension(330, 150));
+		container3.setBackground(Color.lightGray);
+		container3.setLayout(new GridBagLayout());
+		add(container3, BorderLayout.SOUTH);
+		add(container3, BorderLayout.SOUTH);
+		
+		GridBagConstraints c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.NORTH;
+		c.insets = new Insets(10,0,0,0);
 		// container3
-		c.insets = new Insets(10,0,0,25);
+//		c.insets = new Insets(10,0,0,25);
 		c.gridwidth = 1;
 		//airline grid 0
 		c.fill = GridBagConstraints.HORIZONTAL;
@@ -409,13 +420,12 @@ public class Sidebar extends JPanel implements ActionListener {
 		
 		// search grid 9
 		c.fill = GridBagConstraints.HORIZONTAL;
-		c.insets = new Insets(30,0,0,22);
+		c.insets = new Insets(50,10,0,0);
 		c.weightx = 0.5;
 		c.gridx = 1;
 		c.gridy = 2;
 		container3.add(search, c);
 	}
-	
 	
 	public Dimension getPreferredSize() {
         return new Dimension(350, 750);
@@ -447,10 +457,10 @@ public class Sidebar extends JPanel implements ActionListener {
 			
 			
 			// proper dates from calendar.
-			System.out.println(departTime.get(Calendar.DAY_OF_MONTH) + " " + departTime.get(Calendar.MONTH) + " " + departTime.get(Calendar.YEAR));
+			// System.out.println(departTime.get(Calendar.DAY_OF_MONTH) + " " + departTime.get(Calendar.MONTH) + " " + departTime.get(Calendar.YEAR));
 			
-			System.out.println(departDay + " " + departMonth + " " + departYear + "; " + departHour 
-					+ " " + departMinute  + "; " + airline);
+			System.out.println(cityFrom + " " + cityTo + "; " + departDay + " " + departMonth + " " +
+					departYear + "; " + departHour + " " + departMinute  + "; " + airline);
 			
 			if (departMonth != departTime.get(Calendar.MONTH)){
 				System.out.println("Invalid Date");

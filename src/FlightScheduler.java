@@ -37,11 +37,6 @@ public class FlightScheduler {
 				new ArrayList<Query>());
 
 	//	mainWindow.displayFlights("DISPLAYING A TEST INPUT STRING");
-		SwingUtilities.invokeLater(new Runnable() {
-        	    public void run() {
-                mainWindow.display();
-            }
-	        });
 
 		Scanner flightdata = null;
 		try {
