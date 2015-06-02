@@ -98,7 +98,7 @@ public class Query {
         newPath.add(flight);
         int freqFlierPoints = currentPlan.getFreqFlierHours();
         if (request.getAirline().equals(flight.getAirline())) {
-            freqFlierPoints += flight.getCost();
+            freqFlierPoints += flight.getTravelTime();
         }
         return new FlightPlan(
                 flight.getTo(),
@@ -110,7 +110,6 @@ public class Query {
     }
     
     public String getFlightPlan(){
-    	searchForFlightPlans();
     	int totalCost;
     	int totalTime;
     	int totalFlierPoints;
@@ -130,26 +129,38 @@ public class Query {
 		int qMinute = request.getDepartTime().get(Calendar.MINUTE);
 		String qCityFrom = request.getFrom().getName();
 		String qCityTo = request.getTo().getName();
-		String pref1 = preferenceOrder.get(0).name();
-		String pref2 = preferenceOrder.get(1).name();
-		String pref3 = preferenceOrder.get(2).name();
+		ArrayList<String> prefOrder = new ArrayList<String>();
+		for(int i = 0; i < 3; i++){
+			if(preferenceOrder.get(i).name().equals("TIME")){
+				prefOrder.add("Time");
+			}else if(preferenceOrder.get(i).name().equals("COST")){
+				prefOrder.add("Cost");
+			}else if(preferenceOrder.get(i).name().equals("NAME")){
+				prefOrder.add(request.getAirline());
+			}
+		}
+		
         System.out.print("( [ " + qDay + "/" + qMonth + "/" + qYear + ", " + qHour + ":" + qMinute + ", " + 
-    					qCityFrom + ", " + qCityTo + ", (" + pref1 + ", " + pref2 + ", " + pref3 + "), " +
-    					numPlansToShow + "]");
+    					qCityFrom + ", " + qCityTo + ", (" + prefOrder.get(0) + ", " + prefOrder.get(1) + 
+    					", " + prefOrder.get(2) + "), " +numPlansToShow + "]");
         System.out.println();
         System.out.print(", [ ");
         
-        System.out.println();
-        System.out.println();
-//        System.out.println(flightPlans.toString());
-        if(flightPlans.isEmpty()){
-        	System.out.println("flight plans empty");
-        }
+        int flightPlanCount = 0;
+        
     	for(FlightPlan fp : flightPlans){
+    		if(fp.getFlightPath() == null) continue;
     		totalCost = 0;
         	totalTime = 0;
-        	totalFlierPoints = 0;
-    		System.out.print("(( ");
+        	totalFlierPoints = fp.getFreqFlierHours();
+        	int flightCount = 0;
+        	
+        	if(flightPlanCount == 0){
+        		System.out.print("(( ");
+        	}else{
+        		System.out.print("    (( ");
+        	}
+        	
     		for(Flight f: fp.getFlightPath()){
     			int day = f.getDepartTime().get(Calendar.DAY_OF_MONTH);
     			int month = f.getDepartTime().get(Calendar.MONTH);
@@ -158,22 +169,26 @@ public class Query {
     			int minute = f.getDepartTime().get(Calendar.MINUTE);
     			String cityFrom = f.getFrom().getName();
     			String cityTo = f.getTo().getName();
-    			int duration = f.getTravelTime();
     			String airline = f.getAirline();
     			int cost = f.getCost();
+    			int duration = f.getTravelTime();
     			
     			totalCost += cost;
-    			totalTime += duration; // TODO + delay time
-    			// TODO beginnning formatting, with the "(( " needs some work
-    			System.out.println();
-    			System.out.print("[" + day + "/" + month + "/" + year + ", " + hour + ":" + minute + ", " + 
-    					cityFrom + ", " + cityTo + ", " + duration + ", " + airline + ", " + cost + "]");    			
-    		}
-    		System.out.print("), " + totalCost + ", " /* + totalTime + ", " + totalFlierPoints */ + ")" );
-    		System.out.println();
-    		
+    			totalTime += duration;
 
+    			if(flightCount != 0){
+    				System.out.println();
+    				System.out.print("       ");
+    			}
+    			System.out.print("[" + day + "/" + month + "/" + year + ", " + hour + ":" + minute + ", " + 
+    					cityFrom + ", " + cityTo + ", " + duration + ", " + airline + ", " + cost + "]");  
+    			flightCount++;
+    		}
+    		System.out.print("), " + totalCost + ", "  + totalTime + ", " + totalFlierPoints + ")" );
+    		System.out.println();
+    		flightPlanCount++;
     	}
+    	
     	System.out.flush();
         System.setOut(old);
 
