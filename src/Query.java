@@ -42,10 +42,21 @@ public class Query {
 
         pQueue.add(new FlightPlan(request.getFrom(), null, 0, 0, 0));
 
-        while (pQueue.size() > 0) {
+
+        while (pQueue.size() > 0)
+        //I1: First element in the priority queue ==> The element is the minimum in terms of the first preference
+        //I2: |endPlans| <= numPlansToShow
+        //I3 forall flightPlan in pQueue(for i:nat :: i < |flightPlan| -1 ==> flightPlan[i+1] >= flightPlan[i] + 1)
+
+        //****i4: preferenceOrder[0] = NAME ==>
+        // Forall flightPlan in priority queue(forall flight in flightPlan (flight.name == requested airline))
+        {
+            //{ I1 && I2 && I3 && I4}
             FlightPlan currentPlan = pQueue.poll();
 
-            for (Flight flight : currentPlan.getCurrentCity().getOutgoingFlights()) {
+            for (Flight flight : currentPlan.getCurrentCity().getOutgoingFlights())
+
+            {
                 //If the first sorting preference is the airline and the current flight is not of the specified airline,
                 //don't return a flight plan with this flight.
                 if (preferenceOrder.get(0).equals(Preference.NAME) &&
