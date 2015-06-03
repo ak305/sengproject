@@ -1,3 +1,6 @@
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.util.*;
 import java.util.ArrayList;
 import java.util.PriorityQueue;
 
@@ -95,7 +98,7 @@ public class Query {
         newPath.add(flight);
         int freqFlierPoints = currentPlan.getFreqFlierHours();
         if (request.getAirline().equals(flight.getAirline())) {
-            freqFlierPoints += flight.getCost();
+            freqFlierPoints += flight.getTravelTime();
         }
         return new FlightPlan(
                 flight.getTo(),
@@ -104,5 +107,121 @@ public class Query {
                 currentPlan.getTotalTime() + flight.getTravelTime(),   // Changed this to long to handle times better(works nicer with calender)
                 freqFlierPoints
         );
+    }
+    
+
+    public String getFlightPlan(boolean guiOpen){
+    	ByteArrayOutputStream outputString = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(outputString);
+        
+        ByteArrayOutputStream displayString = new ByteArrayOutputStream();
+        PrintStream ds = new PrintStream(displayString);
+
+        PrintStream old = System.out;
+
+        System.setOut(ps);
+
+        int qDay = request.getDepartTime().get(Calendar.DAY_OF_MONTH);
+		int qMonth = request.getDepartTime().get(Calendar.MONTH);
+		int qYear = request.getDepartTime().get(Calendar.YEAR);
+		int qHour = request.getDepartTime().get(Calendar.HOUR_OF_DAY);
+		int qMinute = request.getDepartTime().get(Calendar.MINUTE);
+		String qCityFrom = request.getFrom().getName();
+		String qCityTo = request.getTo().getName();
+
+        StringBuilder builder = new StringBuilder();
+
+        for (Preference preference: preferenceOrder) {
+            if (builder.length() != 0) {
+                builder.append(", ");
+            }
+            if (preference.equals(Preference.NAME)){
+                builder.append(request.getAirline());
+            } else {
+                builder.append(preference.toString());
+            }
+        }
+
+        System.out.printf("( [ %s/%s/%s, %02d:%02d, %s, %s, (%s), %d ]\n",
+                qDay, qMonth, qYear, qHour, qMinute, qCityFrom, qCityTo, builder.toString(), numPlansToShow
+        );
+        System.out.print(", [ ");
+        
+        System.setOut(ds);
+        System.out.printf("Query:  %-13s to  %-13s  on  %s/%s/%s  at  %02d:%02d,  (%s),  Max Routes Shown: %d",
+				qCityFrom, qCityTo, qDay, qMonth, qYear, qHour, qMinute,  builder.toString(), numPlansToShow);
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.setOut(ps);
+
+        int flightPlanCount = 0;
+        
+    	for(FlightPlan fp : flightPlans){
+    		if(fp.getFlightPath() == null) continue;
+        	int flightCount = 0;
+        	
+        	if(flightPlanCount == 0){
+        		System.out.print("(( ");
+        	}else{
+        		System.out.print("    (( ");
+        	}
+        	System.setOut(ds);
+			System.out.printf("Route %d:",flightPlanCount+1);
+			System.out.println();
+			System.setOut(ps);
+
+        	
+    		for(Flight f: fp.getFlightPath()){
+    			int day = f.getDepartTime().get(Calendar.DAY_OF_MONTH);
+    			int month = f.getDepartTime().get(Calendar.MONTH);
+    			int year = f.getDepartTime().get(Calendar.YEAR);
+    			int hour = f.getDepartTime().get(Calendar.HOUR_OF_DAY);
+    			int minute = f.getDepartTime().get(Calendar.MINUTE);
+    			String cityFrom = f.getFrom().getName();
+    			String cityTo = f.getTo().getName();
+    			String airline = f.getAirline();
+    			int cost = f.getCost();
+    			int duration = f.getTravelTime();
+
+    			if(flightCount != 0){
+    				System.out.println();
+    				System.out.print("       ");
+    			}
+    			flightCount++;
+                System.out.printf("[ %s/%s/%s, %02d:%02d, %s, %s, %d, %s, %d ]",
+                        day, month, year, hour, minute, cityFrom, cityTo, duration, airline, cost
+                );
+                System.setOut(ds);
+                System.out.printf("            %-13s to  %-13s %s/%s/%s,  %02d:%02d,  Duration: %d,  Cost: %d,  Airline: %s",
+                		cityFrom, cityTo, day, month, year, hour, minute, duration, cost, airline);
+                System.out.println();
+                System.setOut(ps);
+                
+    		}
+    		System.out.print("), " + fp.getTotalCost() + ", " + fp.getTotalTime() + ", " + fp.getFreqFlierHours() + ")");
+            if (!getFlightPlans().get(getFlightPlans().size()-1).equals(fp)) {
+                System.out.println();
+            }
+            System.setOut(ds);
+            System.out.print("            ---------------------------------------------------------------------------------- ");
+            System.out.println();
+            System.out.printf("            Total Time: %d,  Total Cost: %d,  Frequent Flier Points Earned: %d",
+            		fp.getTotalTime(), fp.getTotalCost(), fp.getFreqFlierHours());
+            System.out.println();
+            System.out.println();
+            System.setOut(ps);
+    		flightPlanCount++;
+    	}
+        System.out.print("])");
+        System.out.println();
+
+    	System.out.flush();
+        System.setOut(old);
+        if(guiOpen){
+        	return displayString.toString();
+        }else{
+        	return outputString.toString();
+        }
     }
 }

@@ -9,6 +9,7 @@ public class MainWindow {
 	private JButton newGameButton;
 	private Sidebar sidebar;
 	private DisplayWindow displayWindow;
+	private FlightScheduler flightScheduler;
 
 	
 	/**
@@ -20,20 +21,10 @@ public class MainWindow {
 //		newGameButton = new JButton("NEW GAME");
 //		flightScheduler = new Flightscheduler(args)
 
-		// TODO
-		// still need to pass in a list of cities and airlines
-		sidebar = new Sidebar(flightScheduler);
+		this.flightScheduler = flightScheduler;
+		
 		displayWindow = new DisplayWindow();
-		displayWindow.setBackground(Color.DARK_GRAY);
-		sidebar.setSize(550, 700);
 		
-		mainFrame.add(displayWindow);
-		mainFrame.add(sidebar);
-
-		
-		
-		sidebar.setBackground(Color.lightGray);
-		mainFrame.setSize(1150, 700);
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
@@ -46,6 +37,12 @@ public class MainWindow {
 	 * Method to display the main window
 	 */
 	public void display() {
+		sidebar = new Sidebar(flightScheduler);
+		displayWindow.setBackground(Color.DARK_GRAY);
+		mainFrame.add(displayWindow);
+		mainFrame.add(sidebar);		
+		sidebar.setBackground(Color.lightGray);
+		mainFrame.setSize(1150, 700);
 		mainFrame.getContentPane().add(sidebar, BorderLayout.WEST);
 		mainFrame.getContentPane().add(displayWindow, BorderLayout.CENTER);
 //		sidebar.add(newGameButton,BorderLayout.SOUTH);

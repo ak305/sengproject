@@ -7,18 +7,29 @@ public enum Preference implements Comparator<FlightPlan>{
         public int compare(FlightPlan planA, FlightPlan planB) {
             return planA.getTotalCost() - planB.getTotalCost();
         }
+        @Override
+        public String toString() {
+            return "Cost";
+        }
     },
-    NAME{
-        //What happens if we don't know the name of the airline to sort the flight plan with
-        @Override //Change to flights with greatest time with selected airline
+    NAME {
+        @Override
         public int compare(FlightPlan planA, FlightPlan planB) {
             return planB.getFreqFlierHours() - planA.getFreqFlierHours();
+        }
+        @Override
+        public String toString() {
+            return "Name";
         }
     },
     TIME {
         @Override
         public int compare(FlightPlan planA, FlightPlan planB) {
-            return (int)(planA.getTotalTime() - planB.getTotalTime());
+            return (planA.getTotalTime() - planB.getTotalTime());
+        }
+        @Override
+        public String toString() {
+            return "Time";
         }
     }
 
