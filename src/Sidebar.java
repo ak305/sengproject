@@ -1,6 +1,11 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.text.NumberFormatter;
+
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -8,6 +13,9 @@ import java.util.GregorianCalendar;
 
 
 public class Sidebar extends JPanel implements ActionListener {
+	// background image
+	private Image backgroundImage;
+	
 	//City start
 	private JComboBox startCity;
 	private JLabel startCityLabel;
@@ -64,9 +72,13 @@ public class Sidebar extends JPanel implements ActionListener {
 		
 	public Sidebar(FlightScheduler flightScheduler){
 		this.flightScheduler = flightScheduler;
-//		String[] cities = {"a","b","c","d"};
-		// TODO get list of cities
-		// get list of airlines
+
+		try {
+			backgroundImage = ImageIO.read(new File("LeftPanel.png"));
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 		cityNames = flightScheduler.getCityNames();
 		airlineList = flightScheduler.getAirlines();
@@ -114,8 +126,12 @@ public class Sidebar extends JPanel implements ActionListener {
 //		String[] listAirline = {"None", "Virgin", "Qantas"};
 		airlines = new JComboBox<>(airlineList.toArray());
 		airlineLabel = new JLabel();
-		NumberFormat.getIntegerInstance();
-		numOutput = new JFormattedTextField(numberFormat);
+		NumberFormat longFormat = NumberFormat.getIntegerInstance();
+		NumberFormatter numberFormatter = new NumberFormatter(longFormat);
+		numberFormatter.setValueClass(Long.class);
+		numberFormatter.setAllowsInvalid(false); 
+		numberFormatter.setMinimum(0l); 
+		numOutput = new JFormattedTextField(numberFormatter);
 		numOutput.setValue(5);
 		numOutput.setFocusLostBehavior(JFormattedTextField.PERSIST);
 		numOutput.addFocusListener(new FocusAdapter() {
@@ -200,7 +216,8 @@ public class Sidebar extends JPanel implements ActionListener {
 	public void addTopPanel(){
 		JPanel container = new JPanel();
 		container.setPreferredSize(new Dimension(330, 220));
-		container.setBackground(Color.lightGray);
+//		container.setBackground(Color.lightGray);
+		container.setOpaque(false);
 		container.setLayout(new GridBagLayout());
 		add(container, BorderLayout.NORTH);
 		
@@ -322,7 +339,8 @@ public class Sidebar extends JPanel implements ActionListener {
 	public void addMidPanel(){
 		JPanel container2 = new JPanel();
 		container2.setPreferredSize(new Dimension(330, 100));
-		container2.setBackground(Color.lightGray);
+//		container2.setBackground(Color.lightGray);
+		container2.setOpaque(false);
 		container2.setLayout(new GridBagLayout());
 		add(container2, BorderLayout.CENTER);
 		
@@ -360,7 +378,8 @@ public class Sidebar extends JPanel implements ActionListener {
 	public void addBotPanel(){
 		JPanel container3 = new JPanel();
 		container3.setPreferredSize(new Dimension(330, 150));
-		container3.setBackground(Color.lightGray);
+//		container3.setBackground(Color.lightGray);
+		container3.setOpaque(false);
 		container3.setLayout(new GridBagLayout());
 		add(container3, BorderLayout.SOUTH);
 		add(container3, BorderLayout.SOUTH);
@@ -419,8 +438,8 @@ public class Sidebar extends JPanel implements ActionListener {
 	
 	public void paintComponent(Graphics g) {
         super.paintComponent(g);
-//    	g.drawImage(backgroundImage, 0, 0, null);
-    }
+    	g.drawImage(backgroundImage, 0, 0, null);
+    }	
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -468,7 +487,7 @@ public class Sidebar extends JPanel implements ActionListener {
 //			}
 //			System.out.print("; numOutput: " + numPlansToShow);
 //			System.out.println();
-
+//			System.out.println("**** " + departYear);
 			flightScheduler.addQuery(cityFrom, cityTo, departYear, departMonth, departDay, 
 					departHour, departMinute, airline, 
 					priorityOrderModel, numPlansToShow);

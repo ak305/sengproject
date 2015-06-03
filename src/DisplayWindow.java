@@ -10,14 +10,18 @@ import javax.swing.*;
 public class DisplayWindow extends JPanel {
 	private JTextArea textArea;
 	private String output;
+	private JScrollPane scroll;
 	
 	public DisplayWindow(){
 		
 		setLayout(new BorderLayout());
 		
 //		panel = new JPanel();
-		textArea = new JTextArea();
-		
+		textArea = new JTextArea(250, 50);
+//		textArea.setBackground(Color.LIGHT_GRAY);
+		textArea.setForeground(Color.BLACK);
+		scroll = new JScrollPane(textArea);
+		scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		display();
 	}
 	
@@ -47,16 +51,17 @@ public class DisplayWindow extends JPanel {
 		leftPadding.setPreferredSize(new Dimension(20,680));
 		rightPadding.setPreferredSize(new Dimension(20,680));
 		
-		topPadding.setBackground(Color.darkGray);
-		bottomPadding.setBackground(Color.darkGray);
-		leftPadding.setBackground(Color.darkGray);
-		rightPadding.setBackground(Color.darkGray);
+		Color paddingColour = Color.gray;
+		topPadding.setBackground(paddingColour);
+		bottomPadding.setBackground(paddingColour);
+		leftPadding.setBackground(paddingColour);
+		rightPadding.setBackground(paddingColour);
 		
 		add(topPadding, BorderLayout.NORTH);
 		add(bottomPadding, BorderLayout.SOUTH);
 		add(leftPadding, BorderLayout.WEST);
 		add(rightPadding, BorderLayout.EAST);
-		add(textArea, BorderLayout.CENTER);
+		add(scroll, BorderLayout.CENTER);
 	}
 	
 	public void displayFlights(String flightList){

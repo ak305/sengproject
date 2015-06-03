@@ -62,7 +62,8 @@ public class Flight {
 
     public Calendar getArrivalTime() {
         Calendar arrivalTime = (Calendar)departTime.clone();
-        arrivalTime.add(Calendar.MINUTE, travelTime);
+        arrivalTime.add(Calendar.MINUTE, travelTime + 60);
+        
         return arrivalTime;
     }
 }

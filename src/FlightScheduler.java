@@ -161,16 +161,19 @@ public class FlightScheduler {
             System.out.println("No input files specified as parameter/s in the format:\n" +
                     "\t<flight data> <optional query data>");
         }
-		System.out.println("Super sperm");
+//		System.out.println("Super sperm");
 	}
 
 	public void addQuery(String cityFrom, String cityTo, int year, int month,
 			int day, int hour, int minute, String airline,
 			DefaultListModel<String> preferenceOrder, int numFlights) {
 
+//		System.out.println(year);
 		Calendar departTime = new GregorianCalendar(year, month, day, hour,
 				minute);
-
+//		System.out.println("*****" + departTime.get(Calendar.YEAR));
+		departTime.set(year, month, day, hour, minute);
+		
 		// traveltime & cost not inputted (leave as -1)
 		Flight request = new Flight(this.getCity(cityFrom),	this.getCity(cityTo), departTime, -1, airline, -1);
 

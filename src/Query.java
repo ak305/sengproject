@@ -23,7 +23,7 @@ public class Query {
      */
     protected void searchForFlightPlans() {
         // insert paths generated into flightPlans
-
+//    	System.out.println(request.getDepartTime().get(Calendar.YEAR));
 
         //Searching path, based on the three preferences criteria 
 
@@ -59,6 +59,9 @@ public class Query {
                     flight.getDepartTime().getTimeInMillis() <
                     currentPlan.getLastFlight().getArrivalTime().getTimeInMillis() + 3600000) continue;
 
+//                if (currentPlan.getFlightPath() != null &&
+//                		flight.getDepartTime().after(currentPlan.getLastFlight().getArrivalTime()) && 
+//                		request.getArrivalTime().after(flight.getDepartTime())) continue;
                 FlightPlan newPlan = createNeighbour(flight, currentPlan);
                 pQueue.add(newPlan);
             }
@@ -206,7 +209,7 @@ public class Query {
             System.setOut(ds);
             System.out.print("            ---------------------------------------------------------------------------------- ");
             System.out.println();
-            System.out.printf("            Total Time: %d,  Total Cost: %d,  Frequent Flier Points Earned: %d",
+            System.out.printf("            Total Time: %d mins,  Total Cost: $%d,  Frequent Flier Points Earned: %d",
             		fp.getTotalTime(), fp.getTotalCost(), fp.getFreqFlierHours());
             System.out.println();
             System.out.println();
