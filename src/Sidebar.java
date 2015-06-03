@@ -1,24 +1,10 @@
+import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-
-import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
-import javax.swing.border.TitledBorder;
-import javax.swing.event.MouseInputAdapter;
-import javax.swing.text.NumberFormatter;
 
 
 public class Sidebar extends JPanel implements ActionListener {
@@ -86,9 +72,9 @@ public class Sidebar extends JPanel implements ActionListener {
 		airlineList = flightScheduler.getAirlines();
 		airlineList.add(0, "None");
 		
-		startCity = new JComboBox(cityNames.toArray());
+		startCity = new JComboBox<>(cityNames.toArray());
 		startCityLabel = new JLabel();
-		endCity = new JComboBox(cityNames.toArray());
+		endCity = new JComboBox<>(cityNames.toArray());
 		endCityLabel = new JLabel();
 		date = new ArrayList<JComboBox>();
 		dateLabel = new JLabel();
@@ -106,9 +92,9 @@ public class Sidebar extends JPanel implements ActionListener {
 		monthLabel = new JLabel();
 		dayLabel = new JLabel();
 		
-		date.add(new JComboBox(day));
-		date.add(new JComboBox(month));
-		date.add(new JComboBox(year));
+		date.add(new JComboBox<>(day));
+		date.add(new JComboBox<>(month));
+		date.add(new JComboBox<>(year));
 		
 		time = new ArrayList<JComboBox>();
 		timeLabel = new JLabel();
@@ -122,13 +108,13 @@ public class Sidebar extends JPanel implements ActionListener {
 		}
 		hourLabel = new JLabel();
 		minuteLabel = new JLabel();
-		time.add(new JComboBox(hour));
-		time.add(new JComboBox(minute));
+		time.add(new JComboBox<>(hour));
+		time.add(new JComboBox<>(minute));
 		
 //		String[] listAirline = {"None", "Virgin", "Qantas"};
-		airlines = new JComboBox(airlineList.toArray());
+		airlines = new JComboBox<>(airlineList.toArray());
 		airlineLabel = new JLabel();
-		numberFormat.getIntegerInstance();
+		NumberFormat.getIntegerInstance();
 		numOutput = new JFormattedTextField(numberFormat);
 		numOutput.setValue(5);
 		numOutput.setFocusLostBehavior(JFormattedTextField.PERSIST);

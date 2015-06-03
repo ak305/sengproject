@@ -1,0 +1,5 @@
+#!/bin/sh
+cd src
+rm -f *.class
+javac City.java DisplayWindow.java Flight.java FlightPlanChainedComparator.java FlightPlan.java FlightScheduler.java MainWindow.java Preference.java Query.java Sidebar.java
+
