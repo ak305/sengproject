@@ -163,11 +163,18 @@ public class QueryTest {
         assertEquals(frankfurt, query1.getFlightPlans().get(0).getCurrentCity());
         assertEquals(5800, query1.getFlightPlans().get(0).getTotalCost());
         assertEquals(1202, query1.getFlightPlans().get(0).getTotalTime());
+        assertEquals(0, query1.getFlightPlans().get(0).getFreqFlierHours());
         assertEquals(singapore.getOutgoingFlights().get(0), query1.getFlightPlans().get(0).getLastFlight());
 
-
         assert query2.getFlightPlans().size() == 0;
+
         assert  query3.getFlightPlans().size() == 1;
+        assertEquals(frankfurt, query3.getFlightPlans().get(0).getCurrentCity());
+        assertEquals(7101, query3.getFlightPlans().get(0).getTotalCost());
+        assertEquals(1316, query3.getFlightPlans().get(0).getTotalTime());
+        assertEquals(7101, query3.getFlightPlans().get(0).getFreqFlierHours());
+
+        System.out.println("ALL TESTS PASSED!!!\nYOU ARE AWESOME");
     }
 
     private void printQuery(Query query) {
