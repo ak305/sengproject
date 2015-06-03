@@ -65,4 +65,11 @@ public class Flight {
         arrivalTime.add(Calendar.MINUTE, travelTime);
         return arrivalTime;
     }
+
+    public Calendar getArrivalTimePlusDelay() {
+        Calendar arrivalTime = (Calendar)departTime.clone();
+        arrivalTime.add(Calendar.MINUTE, travelTime + 60);
+        return arrivalTime;
+    }
+
 }

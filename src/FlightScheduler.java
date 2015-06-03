@@ -51,7 +51,7 @@ public class FlightScheduler {
                 while (i < parseresults.size()) {
                     try {
                         int day = Integer.parseInt(parseresults.get(i++));
-                        int month = Integer.parseInt(parseresults.get(i++));
+                        int month = Integer.parseInt(parseresults.get(i++))-1;
                         int year = Integer.parseInt(parseresults.get(i++));
                         int hourTime = Integer.parseInt(parseresults.get(i++));
                         int minuteTime = Integer.parseInt(parseresults.get(i++));
@@ -105,14 +105,12 @@ public class FlightScheduler {
                         }
 
                     }
-                    //			    for (String j : parseresults){
-                    //			    	System.out.println(j);
-                    //			    }
+
                     int i = 0;
                     while (i < parseresults.size()) {
                         try {
                             int day = Integer.parseInt(parseresults.get(i++));
-                            int month = Integer.parseInt(parseresults.get(i++));
+                            int month = Integer.parseInt(parseresults.get(i++))-1;
                             int year = Integer.parseInt(parseresults.get(i++));
                             int hourTime = Integer.parseInt(parseresults.get(i++));
                             int minuteTime = Integer.parseInt(parseresults.get(i++));
@@ -164,6 +162,19 @@ public class FlightScheduler {
 		System.out.println("Super sperm");
 	}
 
+    /**
+     * Adds a query to the query list
+     * @param cityFrom start point of the query
+     * @param cityTo end point of the query
+     * @param year of departure
+     * @param month of departure (0...11, same format as Calendar)
+     * @param day of departure
+     * @param hour of departure
+     * @param minute of departure
+     * @param airline preferred airline of travel
+     * @param preferenceOrder to sort flights
+     * @param numFlights number of flight plans to show
+     */
 	public void addQuery(String cityFrom, String cityTo, int year, int month,
 			int day, int hour, int minute, String airline,
 			DefaultListModel<String> preferenceOrder, int numFlights) {
@@ -172,7 +183,7 @@ public class FlightScheduler {
 				minute);
 
 		// traveltime & cost not inputted (leave as -1)
-		Flight request = new Flight(this.getCity(cityFrom),	this.getCity(cityTo), departTime, -1, airline, -1);
+		Flight request = new Flight(getCity(cityFrom),	getCity(cityTo), departTime, -1, airline, -1);
 
 		ArrayList<Preference> pOrder = new ArrayList<Preference>();
 		for (int i = 0; i < 3; i++) {
@@ -190,6 +201,12 @@ public class FlightScheduler {
 
 	}
 
+    /**
+     * Adds a new city with the name and returns it.
+     * If it already exists, returns the existing city.
+     * @param cityName
+     * @return city
+     */
 	public City addCity(String cityName) {
 		// search through existing cities to see if we already have a city of this name
 		for (City c : this.cities) {
@@ -202,6 +219,12 @@ public class FlightScheduler {
 		return newCity;
 	}
 
+    /**
+     * Gets the city with the corresponding name, else returns null.
+     * Cities are assumed to be unique by name.
+     * @param cityName
+     * @return city
+     */
 	public City getCity(String cityName) {
 		for (City c : this.cities) {
 			if (c.getName().equals(cityName))
@@ -211,12 +234,25 @@ public class FlightScheduler {
 		return null;
 	}
 
+    /**
+     * Adds a flight ot the flightList
+     * @param from city
+     * @param to city
+     * @param departTime of flight
+     * @param travelTime of the flight
+     * @param airline running the flight
+     * @param cost of the flight
+     */
 	public void addFlight(City from, City to, Calendar departTime, int travelTime, String airline, int cost) {
 		Flight newFlight = new Flight(from, to, departTime, travelTime, airline, cost);
 		this.flights.add(newFlight);
 		from.getOutgoingFlights().add(newFlight);
 	}
-	
+
+    /**
+     * Gets a list of airline names
+     * @return names of all the airlines
+     */
 	public ArrayList<String> getAirlines() {
 		ArrayList<String> airlines = new ArrayList<>();
 		for (Flight flight : flights) {
@@ -227,7 +263,11 @@ public class FlightScheduler {
 		Collections.sort(airlines);
 		return airlines;
 	}
-	
+
+    /**
+     * Gets a list of city names
+     * @return names of all the cities
+     */
 	public ArrayList<String> getCityNames() {
     	ArrayList<String> cityNames = new ArrayList<>();
     	for (City city: cities) {
@@ -238,7 +278,10 @@ public class FlightScheduler {
     	Collections.sort(cityNames);
     	return cityNames;
     }
-	
+
+    /**
+     * For each query, prints the output of the search to stdout.
+     */
 	public void printQueries(){
 		for(Query q : queries){
 			q.searchForFlightPlans();
