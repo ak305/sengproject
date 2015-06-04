@@ -44,20 +44,21 @@ public class Query {
         ArrayList<FlightPlan> endPlans = new ArrayList<FlightPlan>();
 
         pQueue.add(new FlightPlan(request.getFrom(), null, 0, 0, 0));
-
         while (pQueue.size() > 0) {
             FlightPlan currentPlan = pQueue.poll();
 
             for (Flight flight : currentPlan.getCurrentCity().getOutgoingFlights()) {
-                //If the first sorting preference is the airline and the current flight is not of the specified airline,
-                //don't return a flight plan with this flight.
+                // If the first sorting preference is the airline and the current flight is not of the specified airline,
+                // don't return a flight plan with this flight.
                 if (preferenceOrder.get(0).equals(Preference.NAME) &&
                         !flight.getAirline().equals(request.getAirline())) continue;
 
-
+                // If the flight occurs before the last flight in our path (+60min delay), skip
                 if (currentPlan.getFlightPath() != null &&
-                    flight.getDepartTime().getTimeInMillis() <
-                    currentPlan.getLastFlight().getArrivalTime().getTimeInMillis() + 3600000) continue;
+                        flight.getDepartTime().before(currentPlan.getLastFlight().getArrivalTimePlusDelay())) continue;
+
+                // If the flight leaves before the requested departure time, skip
+                if (flight.getDepartTime().before(request.getDepartTime())) continue;
 
 //                if (currentPlan.getFlightPath() != null &&
 //                		flight.getDepartTime().after(currentPlan.getLastFlight().getArrivalTime()) && 
@@ -125,7 +126,7 @@ public class Query {
         System.setOut(ps);
 
         int qDay = request.getDepartTime().get(Calendar.DAY_OF_MONTH);
-		int qMonth = request.getDepartTime().get(Calendar.MONTH);
+		int qMonth = request.getDepartTime().get(Calendar.MONTH)+1;
 		int qYear = request.getDepartTime().get(Calendar.YEAR);
 		int qHour = request.getDepartTime().get(Calendar.HOUR_OF_DAY);
 		int qMinute = request.getDepartTime().get(Calendar.MINUTE);
@@ -177,7 +178,7 @@ public class Query {
         	
     		for(Flight f: fp.getFlightPath()){
     			int day = f.getDepartTime().get(Calendar.DAY_OF_MONTH);
-    			int month = f.getDepartTime().get(Calendar.MONTH);
+    			int month = f.getDepartTime().get(Calendar.MONTH)+1;
     			int year = f.getDepartTime().get(Calendar.YEAR);
     			int hour = f.getDepartTime().get(Calendar.HOUR_OF_DAY);
     			int minute = f.getDepartTime().get(Calendar.MINUTE);
