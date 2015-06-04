@@ -1,5 +1,6 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.text.MaskFormatter;
 import javax.swing.text.NumberFormatter;
 
 import java.awt.*;
@@ -10,6 +11,7 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 
 
 public class Sidebar extends JPanel implements ActionListener {
@@ -126,12 +128,19 @@ public class Sidebar extends JPanel implements ActionListener {
 //		String[] listAirline = {"None", "Virgin", "Qantas"};
 		airlines = new JComboBox<>(airlineList.toArray());
 		airlineLabel = new JLabel();
+		
 		NumberFormat longFormat = NumberFormat.getIntegerInstance();
 		NumberFormatter numberFormatter = new NumberFormatter(longFormat);
-		numberFormatter.setValueClass(Long.class);
-		numberFormatter.setAllowsInvalid(false); 
-		numberFormatter.setMinimum(0l); 
-		numOutput = new JFormattedTextField(numberFormatter);
+		numOutput = new JFormattedTextField(numberFormatter) {
+			  public void processKeyEvent(KeyEvent ev) {
+				    char c = ev.getKeyChar();
+				    if (!(Character.isDigit(c) || c == KeyEvent.VK_DELETE || c == KeyEvent.VK_BACK_SPACE)) {
+				    	ev.consume();
+				    }
+				    super.processKeyEvent(ev);
+			  }
+		};
+		
 		numOutput.setValue(5);
 		numOutput.setFocusLostBehavior(JFormattedTextField.PERSIST);
 		numOutput.addFocusListener(new FocusAdapter() {
@@ -144,7 +153,6 @@ public class Sidebar extends JPanel implements ActionListener {
 		numOutputLabel = new JLabel();
 		search = new JButton("Search");
 		
-		// do we need clear?
 		clear = new JButton("Clear");
 		
 		search.addActionListener(this);
