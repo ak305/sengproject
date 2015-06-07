@@ -21,9 +21,11 @@ public class Query {
     /**
      * Searches for flight paths, adding each to the flightPlans list
      */
-    protected void searchForFlightPlans() {
+    protected void searchForFlightPlans()
+    // precondition: TRUE
+    // postcondition: |endPlans| <= numPlansToShow
+    {
         // insert paths generated into flightPlans
-//    	System.out.println(request.getDepartTime().get(Calendar.YEAR));
 
         //Searching path, based on the three preferences criteria 
 
@@ -44,37 +46,61 @@ public class Query {
         ArrayList<FlightPlan> endPlans = new ArrayList<FlightPlan>();
 
         pQueue.add(new FlightPlan(request.getFrom(), null, 0, 0, 0));
-        while (pQueue.size() > 0) {
+
+        // { |pQueue| = 1 }
+
+        while (pQueue.size() > 0)
+        //Invariant: Forall i, j in Nat (i < j < |pQueue| ==> pQueue[i] < pQueue[j] w.r.t Preference Order) &&
+        // |endPlans| <= numPlansToShow &&
+        // preferenceOrder[0] = NAME ==> forall FlightPlan fp in pQueue(forall Flight f in fp (f.getAirline() == request.getAirline()))
+
+        // Guard: pQueue != 0
+
+        //Variant: One node is removed from pQueue
+        {
             FlightPlan currentPlan = pQueue.poll();
+            // { currentPlan > old(currentPlan) }
+            // { |pQueue| = |old(pQueue)| - 1 }
 
             for (Flight flight : currentPlan.getCurrentCity().getOutgoingFlights()) {
                 // If the first sorting preference is the airline and the current flight is not of the specified airline,
                 // don't return a flight plan with this flight.
+
                 if (preferenceOrder.get(0).equals(Preference.NAME) &&
                         !flight.getAirline().equals(request.getAirline())) continue;
+
+                // { preferenceOrder[0] != NAME || flight.getAirline() != request.getAirline() }
 
                 // If the flight occurs before the last flight in our path (+60min delay), skip
                 if (currentPlan.getFlightPath() != null &&
                         flight.getDepartTime().before(currentPlan.getLastFlight().getArrivalTimePlusDelay())) continue;
 
+                // { flight.getDepartTime() > (currentPlan.getLastFlight().getArrivalTimePlusDelay() }
+
                 // If the flight leaves before the requested departure time, skip
                 if (flight.getDepartTime().before(request.getDepartTime())) continue;
 
-//                if (currentPlan.getFlightPath() != null &&
-//                		flight.getDepartTime().after(currentPlan.getLastFlight().getArrivalTime()) && 
-//                		request.getArrivalTime().after(flight.getDepartTime())) continue;
                 FlightPlan newPlan = createNeighbour(flight, currentPlan);
+
                 pQueue.add(newPlan);
+                // { |pQueue| = |old(pQueue)| + 1 }
+                // { Forall i, j in Nat (i < j < |pQueue| ==> pQueue[i] < pQueue[j] w.r.t Preference Order) }
+
             }
 
             //Flight plan ends in the requested destination
             if (currentPlan.getCurrentCity().equals(request.getTo())) {
                 endPlans.add(currentPlan);
             }
+
+            // { |endPlans| = old(|oldPlan|) + 1 }
+
             //endPlans will contain the first N flight plans. Some optimal flight plans may be excluded??
             if (endPlans.size() == numPlansToShow) break;
 
+            // { |endPlans| <= numPlansToShow }
         }
+        // { Invariant && !Guard }
         flightPlans.addAll(endPlans);
     }
 
@@ -82,16 +108,11 @@ public class Query {
     // PRIVATE HELPERS //
     /////////////////////
 
-//    private int calcFreqFlierPoints(String airline) {
-//        int points = 0;
-//        for (Flight flight : flightPath) {
-//            if (flight.getAirline().equals(airline)) {
-//                points += flight.getCost();
-//            }
-//        }
-//        return points;
-//    }
-    private FlightPlan createNeighbour(Flight flight, FlightPlan currentPlan){
+    private FlightPlan createNeighbour(Flight flight, FlightPlan currentPlan)
+    // precondition: TRUE
+    // postcondition: FLightPlan != null
+
+    {
         ArrayList<Flight> newPath;
         if (currentPlan.getFlightPath() == null) {
             newPath = new ArrayList<Flight>();
