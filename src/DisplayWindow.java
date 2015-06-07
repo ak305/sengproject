@@ -12,21 +12,22 @@ public class DisplayWindow extends JPanel {
 	private String output;
 	private JScrollPane scroll;
 	
+	/**
+	 * Constructor for the display window that displays the return flights from the query
+	 */
 	public DisplayWindow(){
-		
 		setLayout(new BorderLayout());
-		
-//		panel = new JPanel();
 		textArea = new JTextArea(250, 50);
-//		textArea.setBackground(Color.LIGHT_GRAY);
 		textArea.setForeground(Color.BLACK);
 		scroll = new JScrollPane(textArea);
 		scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		display();
 	}
 	
+	/**
+	 * Displays the output window onto the gui
+	 */
 	public void display(){
-//		panel.setBackground(Color.darkGray);
 		setPreferredSize(new Dimension(550,600));
 		setLocation(50, 50);
 		textArea.addFocusListener(new FocusAdapter() {
@@ -39,7 +40,6 @@ public class DisplayWindow extends JPanel {
 		textArea.setText(output);
 		textArea.setPreferredSize(new Dimension(400, 400));
 		textArea.setEditable(false);
-//		textField.setLocation(50, 50);
 		
 		JPanel topPadding = new JPanel();
 		JPanel bottomPadding = new JPanel();
@@ -64,6 +64,10 @@ public class DisplayWindow extends JPanel {
 		add(scroll, BorderLayout.CENTER);
 	}
 	
+	/**
+	 * Outputs the string of routes to the display window
+	 * @param flightList A string containing all the returned routes
+	 */
 	public void displayFlights(String flightList){
 		output = flightList;
 		textArea.setText(output);

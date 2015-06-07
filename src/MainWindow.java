@@ -20,9 +20,6 @@ public class MainWindow {
 	 */
 	public MainWindow(FlightScheduler flightScheduler) throws IOException {
 		mainFrame = new JFrame("Flight Scheduler");
-//		newGameButton = new JButton("NEW GAME");
-//		flightScheduler = new Flightscheduler(args)
-
 		this.flightScheduler = flightScheduler;
 		
 		displayWindow = new DisplayWindow();
@@ -42,6 +39,10 @@ public class MainWindow {
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
+	/**
+	 * Method to display the returned routes of query on the gui.
+	 * @param flightList
+	 */
 	public void displayFlights(String flightList){
 		displayWindow.displayFlights(flightList);
 	}
@@ -53,18 +54,11 @@ public class MainWindow {
 	public void display() {
 		sidebar = new Sidebar(flightScheduler);
 		displayWindow.setBackground(Color.DARK_GRAY);
-//		mainFrame.add(displayWindow);
-//		mainFrame.add(sidebar);		
-//		sidebar.setBackground(Color.lightGray);
-//		mainFrame.add(topBanner);
 		topBanner.setPreferredSize(new Dimension(1150, 130));
 		mainFrame.setSize(1150, 700);
 		mainFrame.getContentPane().add(topBanner, BorderLayout.NORTH);
 		mainFrame.getContentPane().add(sidebar, BorderLayout.WEST);
 		mainFrame.getContentPane().add(displayWindow, BorderLayout.CENTER);
-		
-//		sidebar.add(newGameButton,BorderLayout.SOUTH);
-//		mainFrame.pack();
         mainFrame.setVisible(true);
 	}
 }
