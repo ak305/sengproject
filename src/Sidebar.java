@@ -1,13 +1,23 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.text.MaskFormatter;
+import javax.swing.text.NumberFormatter;
+
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 
 
 public class Sidebar extends JPanel implements ActionListener {
+	// background image
+	private Image backgroundImage;
+	
 	//City start
 	private JComboBox startCity;
 	private JLabel startCityLabel;
@@ -51,22 +61,32 @@ public class Sidebar extends JPanel implements ActionListener {
 	
 	//Start
 	private JButton search;
-	//clear
-	private JButton clear;
 	
+	// list of all city names
 	private ArrayList<String> cityNames;
+	
+	// list of all airlines
 	private ArrayList<String> airlineList;
 	
+	// states used by the drag and drop priority order
 	private boolean mouseDragging = false;
     private int dragSourceIndex;
 	
     private FlightScheduler flightScheduler;
-		
+	
+    /**
+     * Creates instances of all the required labels, combo boxes, textfields and priority order drag and drop
+     * @param flightScheduler
+     */
 	public Sidebar(FlightScheduler flightScheduler){
 		this.flightScheduler = flightScheduler;
-//		String[] cities = {"a","b","c","d"};
-		// TODO get list of cities
-		// get list of airlines
+
+		try {
+			backgroundImage = ImageIO.read(new File("LeftPanel.png"));
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 		cityNames = flightScheduler.getCityNames();
 		airlineList = flightScheduler.getAirlines();
@@ -114,8 +134,19 @@ public class Sidebar extends JPanel implements ActionListener {
 //		String[] listAirline = {"None", "Virgin", "Qantas"};
 		airlines = new JComboBox<>(airlineList.toArray());
 		airlineLabel = new JLabel();
-		NumberFormat.getIntegerInstance();
-		numOutput = new JFormattedTextField(numberFormat);
+		
+		NumberFormat longFormat = NumberFormat.getIntegerInstance();
+		NumberFormatter numberFormatter = new NumberFormatter(longFormat);
+		numOutput = new JFormattedTextField(numberFormatter) {
+			  public void processKeyEvent(KeyEvent ev) {
+				    char c = ev.getKeyChar();
+				    if (!(Character.isDigit(c) || c == KeyEvent.VK_DELETE || c == KeyEvent.VK_BACK_SPACE)) {
+				    	ev.consume();
+				    }
+				    super.processKeyEvent(ev);
+			  }
+		};
+		
 		numOutput.setValue(5);
 		numOutput.setFocusLostBehavior(JFormattedTextField.PERSIST);
 		numOutput.addFocusListener(new FocusAdapter() {
@@ -128,11 +159,7 @@ public class Sidebar extends JPanel implements ActionListener {
 		numOutputLabel = new JLabel();
 		search = new JButton("Search");
 		
-		// do we need clear?
-		clear = new JButton("Clear");
-		
 		search.addActionListener(this);
-		clear.addActionListener(this);
 		
 		priorityLabel = new JLabel();
 
@@ -177,6 +204,9 @@ public class Sidebar extends JPanel implements ActionListener {
 
 	}
 	
+	/**
+	 * Adds text to all the created labels, and displays them on the gui
+	 */
 	private void display(){
 		setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		startCityLabel.setText("From: ");
@@ -197,57 +227,53 @@ public class Sidebar extends JPanel implements ActionListener {
 		addBotPanel();
 	}
 	
+	/**
+	 * Displays all the elements in the top part of the sidebar
+	 */
 	public void addTopPanel(){
 		JPanel container = new JPanel();
 		container.setPreferredSize(new Dimension(330, 220));
-		container.setBackground(Color.lightGray);
+		container.setOpaque(false);
 		container.setLayout(new GridBagLayout());
 		add(container, BorderLayout.NORTH);
 		
 		GridBagConstraints c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.NORTH;
 		c.insets = new Insets(10,0,0,0);
-		//container 1
-				// flight date - Gridy 2
 		
+		// date
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 0.5;
 		c.gridx = 0;
 		c.gridy = 3;
 		container.add(dateLabel, c);
-		
 		c.insets = new Insets(10,15,0,0);
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 0.5;
 		c.gridx = 1;
 		c.gridy = 2;
 		container.add(dayLabel, c);
-		
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 0.5;
 		c.gridx = 2;
 		c.gridy = 2;
 		container.add(monthLabel, c);
-		
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 0.5;
 		c.gridx = 3;
 		c.gridy = 2;
 		container.add(yearLabel, c);
-		
 		c.insets = new Insets(10,0,0,0);
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 0.5;
 		c.gridx = 1;
 		c.gridy = 3;
 		container.add(date.get(0), c);
-		
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 0.5;
 		c.gridx = 2;
 		c.gridy = 3;
 		container.add(date.get(1), c);
-		
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 0.5;
 		c.gridx = 3;
@@ -261,7 +287,6 @@ public class Sidebar extends JPanel implements ActionListener {
 		c.gridy = 5;
 		c.gridwidth = 2;
 		container.add(timeLabel, c);
-		
 		c.gridwidth = 1;
 		c.insets = new Insets(10,20,0,0);
 		c.fill = GridBagConstraints.HORIZONTAL;
@@ -269,20 +294,17 @@ public class Sidebar extends JPanel implements ActionListener {
 		c.gridx = 2;
 		c.gridy = 4;
 		container.add(hourLabel, c);
-		
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 0.5;
 		c.gridx = 3;
 		c.gridy = 4;
 		container.add(minuteLabel, c);
-		
 		c.insets = new Insets(10,0,0,0);
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 0.5;
 		c.gridx = 2;
 		c.gridy = 5;
 		container.add(time.get(0), c);
-		
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 0.5;
 		c.gridx = 3;
@@ -294,9 +316,7 @@ public class Sidebar extends JPanel implements ActionListener {
 		c.weightx = 0.5;
 		c.gridx = 0;
 		c.gridy = 0;
-//				c.anchor = GridBagConstraints.NORTH;
 		container.add(startCityLabel, c);
-		
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 0.5;
 		c.gridx = 1;
@@ -310,7 +330,6 @@ public class Sidebar extends JPanel implements ActionListener {
 		c.gridx = 0;
 		c.gridy = 1;
 		container.add(endCityLabel, c);
-		
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 0.5;
 		c.gridx = 1;
@@ -319,10 +338,13 @@ public class Sidebar extends JPanel implements ActionListener {
 		container.add(endCity, c);
 	}
 	
+	/**
+	 * Displays all the elements in the middle part of the sidebar
+	 */
 	public void addMidPanel(){
 		JPanel container2 = new JPanel();
 		container2.setPreferredSize(new Dimension(330, 100));
-		container2.setBackground(Color.lightGray);
+		container2.setOpaque(false);
 		container2.setLayout(new GridBagLayout());
 		add(container2, BorderLayout.CENTER);
 		
@@ -339,7 +361,7 @@ public class Sidebar extends JPanel implements ActionListener {
 		c.gridy = 0;
 		container2.add(pane, c);
 
-		// priority gridy
+		// priority
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 0.5;
 		c.gridx = 0;
@@ -357,10 +379,13 @@ public class Sidebar extends JPanel implements ActionListener {
 		container2.add(order, c);
 	}
 	
+	/**
+	 * Displays all the elements in the bottom part of the sidebar
+	 */
 	public void addBotPanel(){
 		JPanel container3 = new JPanel();
 		container3.setPreferredSize(new Dimension(330, 150));
-		container3.setBackground(Color.lightGray);
+		container3.setOpaque(false);
 		container3.setLayout(new GridBagLayout());
 		add(container3, BorderLayout.SOUTH);
 		add(container3, BorderLayout.SOUTH);
@@ -369,7 +394,6 @@ public class Sidebar extends JPanel implements ActionListener {
 		c.anchor = GridBagConstraints.NORTH;
 		c.insets = new Insets(10,0,0,0);
 		// container3
-//		c.insets = new Insets(10,0,0,25);
 		c.gridwidth = 1;
 		//airline grid 0
 		c.fill = GridBagConstraints.HORIZONTAL;
@@ -377,7 +401,6 @@ public class Sidebar extends JPanel implements ActionListener {
 		c.gridx = 0;
 		c.gridy = 0;
 		container3.add(airlineLabel, c);
-		
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 0.5;
 		c.gridx = 1;
@@ -390,19 +413,11 @@ public class Sidebar extends JPanel implements ActionListener {
 		c.gridx = 0;
 		c.gridy = 1;
 		container3.add(numOutputLabel, c);
-		
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 0.5;
 		c.gridx = 1;
 		c.gridy = 1;
 		container3.add(numOutput, c);
-		
-		// clear grid 2
-//		c.fill = GridBagConstraints.HORIZONTAL;
-//		c.weightx = 0.5;
-//		c.gridx = 0;
-//		c.gridy = 2;
-//		container3.add(clear, c);
 		
 		// search grid 9
 		c.fill = GridBagConstraints.HORIZONTAL;
@@ -413,14 +428,20 @@ public class Sidebar extends JPanel implements ActionListener {
 		container3.add(search, c);
 	}
 	
+	/**
+	 * Gets the preferred size of the sidebar
+	 */
 	public Dimension getPreferredSize() {
         return new Dimension(350, 750);
     }
 	
+	/**
+	 * Overrides the paintComponent function to add a background image to the sidebar
+	 */
 	public void paintComponent(Graphics g) {
         super.paintComponent(g);
-//    	g.drawImage(backgroundImage, 0, 0, null);
-    }
+    	g.drawImage(backgroundImage, 0, 0, null);
+    }	
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -439,6 +460,7 @@ public class Sidebar extends JPanel implements ActionListener {
 					departHour, departMinute);
 			String airline = (String) airlines.getItemAt(airlines.getSelectedIndex());
 			
+			// checking for invalid input into calendar
 			if (departMonth != departTime.get(Calendar.MONTH)){
 				System.out.println("Invalid Date");
 				JOptionPane.showMessageDialog(this,
@@ -451,31 +473,20 @@ public class Sidebar extends JPanel implements ActionListener {
 			int numPlansToShow;
 			try{
 				numPlansToShow = Integer.parseInt(numOutput.getText());
-			} catch(NumberFormatException e2){
+			} 
+			// checking for invalid input into num routes to display textfield
+			catch(NumberFormatException e2){
 				numPlansToShow = 0;
 				JOptionPane.showMessageDialog(this,
 					    "Invalid number of routes input.",
 					    "Invalid Input",
 					    JOptionPane.ERROR_MESSAGE);
-				// display error message?
-				// or default 10?
 			}
-			
-//			System.out.println(cityFrom + " " + cityTo + "; " + departDay + " " + departMonth + " " +
-//					departYear + "; " + departHour + " " + departMinute  + "; " + airline);
-//			for(int i = 0; i < 3; i ++){
-//				System.out.print(priorityOrderModel.get(i) + " ");
-//			}
-//			System.out.print("; numOutput: " + numPlansToShow);
-//			System.out.println();
-
 			flightScheduler.addQuery(cityFrom, cityTo, departYear, departMonth, departDay, 
 					departHour, departMinute, airline, 
 					priorityOrderModel, numPlansToShow);
 			
 			flightScheduler.printQueries();
-//			Query query = new Query(preferenceOrder, request, numPlansToShow);
-			
 		}
 	}
 }

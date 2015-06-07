@@ -10,19 +10,24 @@ import javax.swing.*;
 public class DisplayWindow extends JPanel {
 	private JTextArea textArea;
 	private String output;
+	private JScrollPane scroll;
 	
+	/**
+	 * Constructor for the display window that displays the return flights from the query
+	 */
 	public DisplayWindow(){
-		
 		setLayout(new BorderLayout());
-		
-//		panel = new JPanel();
-		textArea = new JTextArea();
-		
+		textArea = new JTextArea(250, 50);
+		textArea.setForeground(Color.BLACK);
+		scroll = new JScrollPane(textArea);
+		scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		display();
 	}
 	
+	/**
+	 * Displays the output window onto the gui
+	 */
 	public void display(){
-//		panel.setBackground(Color.darkGray);
 		setPreferredSize(new Dimension(550,600));
 		setLocation(50, 50);
 		textArea.addFocusListener(new FocusAdapter() {
@@ -35,7 +40,6 @@ public class DisplayWindow extends JPanel {
 		textArea.setText(output);
 		textArea.setPreferredSize(new Dimension(400, 400));
 		textArea.setEditable(false);
-//		textField.setLocation(50, 50);
 		
 		JPanel topPadding = new JPanel();
 		JPanel bottomPadding = new JPanel();
@@ -47,18 +51,23 @@ public class DisplayWindow extends JPanel {
 		leftPadding.setPreferredSize(new Dimension(20,680));
 		rightPadding.setPreferredSize(new Dimension(20,680));
 		
-		topPadding.setBackground(Color.darkGray);
-		bottomPadding.setBackground(Color.darkGray);
-		leftPadding.setBackground(Color.darkGray);
-		rightPadding.setBackground(Color.darkGray);
+		Color paddingColour = Color.gray;
+		topPadding.setBackground(paddingColour);
+		bottomPadding.setBackground(paddingColour);
+		leftPadding.setBackground(paddingColour);
+		rightPadding.setBackground(paddingColour);
 		
 		add(topPadding, BorderLayout.NORTH);
 		add(bottomPadding, BorderLayout.SOUTH);
 		add(leftPadding, BorderLayout.WEST);
 		add(rightPadding, BorderLayout.EAST);
-		add(textArea, BorderLayout.CENTER);
+		add(scroll, BorderLayout.CENTER);
 	}
 	
+	/**
+	 * Outputs the string of routes to the display window
+	 * @param flightList A string containing all the returned routes
+	 */
 	public void displayFlights(String flightList){
 		output = flightList;
 		textArea.setText(output);

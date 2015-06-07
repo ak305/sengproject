@@ -27,7 +27,6 @@ public class Query {
     {
         // insert paths generated into flightPlans
 
-
         //Searching path, based on the three preferences criteria 
 
         //Dj algo for min cost, min travel time
@@ -80,8 +79,6 @@ public class Query {
 
                 // If the flight leaves before the requested departure time, skip
                 if (flight.getDepartTime().before(request.getDepartTime())) continue;
-
-                // { flight.getDepartTime() > request.getDepartTime() }
 
                 FlightPlan newPlan = createNeighbour(flight, currentPlan);
 
@@ -234,7 +231,7 @@ public class Query {
             System.setOut(ds);
             System.out.print("            ---------------------------------------------------------------------------------- ");
             System.out.println();
-            System.out.printf("            Total Time: %d,  Total Cost: %d,  Frequent Flier Points Earned: %d",
+            System.out.printf("            Total Time: %d mins,  Total Cost: $%d,  Frequent Flier Points Earned: %d",
             		fp.getTotalTime(), fp.getTotalCost(), fp.getFreqFlierHours());
             System.out.println();
             System.out.println();
